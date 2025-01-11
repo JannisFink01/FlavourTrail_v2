@@ -7,13 +7,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.flavourtrail_v2.data.AppDatabase
 import com.example.flavourtrail_v2.data.repository.UserRepository
 import com.example.flavourtrail_v2.ui.theme.FlavourTrail_v2Theme
+import com.example.flavourtrail_v2.ui.theme.TopBar // Angepasster Import der TopBar
 import com.example.flovourtrail_v1.database.entity.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +26,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FlavourTrail_v2Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    topBar = {
+                        TopBar(
+                            userName = "Test User",
+                            profileImageRes = R.drawable.profile_picture
+                        )
+                    }
+                ) { innerPadding ->
                     Greeting(
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
@@ -37,14 +45,21 @@ class MainActivity : ComponentActivity() {
         val userDao = AppDatabase.getDatabase(application).userDao()
         userRepository = UserRepository(userDao)
         CoroutineScope(Dispatchers.IO).launch {
-            val user = User(userId = 1, name = "Test User", email = "testuser@example.com", password = "password", premium = false)
+            val user = User(
+                userId = 1,
+                name = "Test User",
+                email = "testuser@example.com",
+                password = "password",
+                premium = false
+            )
             userRepository.insertUser(user)
-        }    }
+        }
+    }
 }
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
+    androidx.compose.material3.Text(
         text = "Hello $name!",
         modifier = modifier
     )
@@ -54,6 +69,18 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     FlavourTrail_v2Theme {
-        Greeting("Android")
+        Scaffold(
+            topBar = {
+                TopBar(
+                    userName = "Max Mustermann",
+                    profileImageRes = R.drawable.profile_picture
+                )
+            }
+        ) { innerPadding ->
+            Greeting(
+                name = "Android",
+                modifier = Modifier.padding(innerPadding)
+            )
+        }
     }
 }
