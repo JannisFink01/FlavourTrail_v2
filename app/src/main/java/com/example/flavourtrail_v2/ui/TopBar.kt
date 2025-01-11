@@ -1,4 +1,4 @@
-package com.example.flavourtrail_v2.ui.theme
+package com.example.flavourtrail_v2.ui
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
