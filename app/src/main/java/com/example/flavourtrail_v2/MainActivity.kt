@@ -1,26 +1,23 @@
 package com.example.flavourtrail_v2
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.flavourtrail_v2.data.AppDatabase
-import com.example.flavourtrail_v2.data.repository.UserRepository
+import androidx.compose.ui.unit.dp
 import com.example.flavourtrail_v2.ui.theme.FlavourTrail_v2Theme
-import com.example.flavourtrail_v2.ui.theme.TopBar // Angepasster Import der TopBar
-import com.example.flovourtrail_v1.database.entity.User
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.example.flavourtrail_v2.ui.TopBar
 
 class MainActivity : ComponentActivity() {
-    private lateinit var userRepository: UserRepository
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -30,56 +27,57 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
                         TopBar(
-                            userName = "Test User",
+                            userName = "Max Mustermann",
                             profileImageRes = R.drawable.profile_picture
                         )
                     }
                 ) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+                    PlanYourRouteButton(
+                        modifier = Modifier.padding(innerPadding),
+                        onClick = {
+                            // Starte die PlanRouteActivity
+                            val intent = Intent(this, PlanRouteActivity::class.java)
+                            startActivity(intent)
+                        }
                     )
                 }
             }
-        }
-        val userDao = AppDatabase.getDatabase(application).userDao()
-        userRepository = UserRepository(userDao)
-        CoroutineScope(Dispatchers.IO).launch {
-            val user = User(
-                userId = 1,
-                name = "Test User",
-                email = "testuser@example.com",
-                password = "password",
-                premium = false
-            )
-            userRepository.insertUser(user)
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    androidx.compose.material3.Text(
-        text = "Hello $name!",
+fun PlanYourRouteButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Box(
         modifier = modifier
-    )
+            .fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        Button(
+            onClick = onClick,
+            modifier = Modifier
+                .padding(top = 32.dp)
+        ) {
+            Text(text = "Plan your Route")
+        }
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun PlanYourRouteButtonPreview() {
     FlavourTrail_v2Theme {
         Scaffold(
             topBar = {
                 TopBar(
-                    userName = "Max Mustermann",
+                    userName = "Preview User",
                     profileImageRes = R.drawable.profile_picture
                 )
             }
-        ) { innerPadding ->
-            Greeting(
-                name = "Android",
-                modifier = Modifier.padding(innerPadding)
+        ) {
+            PlanYourRouteButton(
+                modifier = Modifier.padding(it),
+                onClick = { /* Keine Aktion in der Preview */ }
             )
         }
     }
