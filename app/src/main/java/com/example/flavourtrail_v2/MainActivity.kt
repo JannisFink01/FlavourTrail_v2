@@ -7,11 +7,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.flavourtrail_v2.ui.theme.FlavourTrail_v2Theme
@@ -28,7 +30,7 @@ class MainActivity : ComponentActivity() {
                     topBar = {
                         TopBar(
                             userName = "Max Mustermann",
-                            profileImageRes = R.drawable.profile_picture
+                            profileImageRes = R.drawable.profile_user
                         )
                     }
                 ) { innerPadding ->
@@ -59,6 +61,12 @@ fun PlanYourRouteButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
                 .padding(top = 32.dp)
         ) {
             Text(text = "Plan your Route")
+            Spacer(modifier = Modifier.width(10.dp))
+            Icon(
+            painter = painterResource(id = R.drawable.route),
+            contentDescription = "Location Icon",
+            modifier = Modifier.size(16.dp)
+        )
         }
     }
 }
@@ -71,7 +79,7 @@ fun PlanYourRouteButtonPreview() {
             topBar = {
                 TopBar(
                     userName = "Preview User",
-                    profileImageRes = R.drawable.profile_picture
+                    profileImageRes = R.drawable.profile_user
                 )
             }
         ) {

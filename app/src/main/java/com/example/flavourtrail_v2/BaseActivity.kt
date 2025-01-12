@@ -30,7 +30,7 @@ fun BaseLayout(content: @Composable () -> Unit) {
     Column(modifier = Modifier.fillMaxSize()) {
         TopBar(
             userName = "John Doe", // Beispiel für Benutzernamen
-            profileImageRes = R.drawable.profile_picture // Beispiel für Profilbild
+            profileImageRes = R.drawable.profile_user // Beispiel für Profilbild
         )
 
         Spacer(modifier = Modifier.height(16.dp)) // Abstand nach der TopBar

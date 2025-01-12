@@ -56,7 +56,7 @@ class PlaceReviews : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ReviewCard(
-                review = exampleReview, profileImageRes = R.drawable.profile_picture
+                review = exampleReview, profileImageRes = R.drawable.profile_user
             )
         }
 
@@ -130,6 +130,6 @@ fun PreviewHeadline() {
         )
     )
     ReviewCard(
-        review = exampleReview, profileImageRes = R.drawable.profile_picture
+        review = exampleReview, profileImageRes = R.drawable.profile_user
     )
 }
