@@ -1,7 +1,7 @@
 package com.example.flavourtrail_v2.data.repository
 
-import com.example.flovourtrail_v1.database.dao.RouteDao
-import com.example.flovourtrail_v1.database.entity.Route
+import com.example.flovourtrail_v2.data.dao.RouteDao
+import com.example.flovourtrail_v2.data.entity.Route
 
 class RouteRepository(private val routeDao: RouteDao) {
     suspend fun insertRoute(route: Route) {

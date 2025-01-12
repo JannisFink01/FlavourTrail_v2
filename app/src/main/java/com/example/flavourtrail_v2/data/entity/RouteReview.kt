@@ -1,4 +1,4 @@
-package com.example.flovourtrail_v1.database.entity
+package com.example.flovourtrail_v2.data.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

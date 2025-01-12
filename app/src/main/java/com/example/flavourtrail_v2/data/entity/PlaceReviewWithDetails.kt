@@ -1,4 +1,4 @@
-package com.example.flavourtrail_v2.data.entity
+package com.example.flovourtrail_v2.data.entity
 
 import androidx.room.Embedded
 import androidx.room.Relation

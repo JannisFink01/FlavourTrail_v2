@@ -1,15 +1,11 @@
-package com.example.flovourtrail_v1.database.dao
+package com.example.flovourtrail_v2.data.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Delete
-import com.example.flavourtrail_v2.data.entity.PlaceReviewWithDetails
-import com.example.flovourtrail_v1.database.entity.Place
-import com.example.flovourtrail_v1.database.entity.PlaceReview
-import com.example.flovourtrail_v1.database.entity.RouteReview
-import com.example.flovourtrail_v1.database.entity.User
+import com.example.flovourtrail_v2.data.entity.RouteReview
 
 @Dao
 interface RouteReviewDao {

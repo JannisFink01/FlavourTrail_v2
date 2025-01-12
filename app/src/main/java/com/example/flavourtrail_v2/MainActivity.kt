@@ -14,7 +14,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.flavourtrail_v2.data.AppDatabase
 import com.example.flavourtrail_v2.data.repository.UserRepository
 import com.example.flavourtrail_v2.ui.theme.FlavourTrail_v2Theme
-import com.example.flovourtrail_v1.database.entity.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,12 +33,13 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        val userDao = AppDatabase.getDatabase(application).userDao()
-        userRepository = UserRepository(userDao)
-        CoroutineScope(Dispatchers.IO).launch {
-            val user = User(userId = 1, name = "Test User", email = "testuser@example.com", password = "password", premium = false)
-            userRepository.insertUser(user)
-        }    }
+//        val userDao = AppDatabase.getInstance(application).userDao()
+//        userRepository = UserRepository(userDao)
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val user = User(userId = 4, name = "Test User", email = "testuser@example.com", password = "password", premium = false)
+//            userRepository.insertUser(user)
+//        }
+           }
 }
 
 @Composable

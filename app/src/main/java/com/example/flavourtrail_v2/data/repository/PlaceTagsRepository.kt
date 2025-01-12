@@ -1,7 +1,7 @@
 package com.example.flavourtrail_v2.data.repository
 
-import com.example.flovourtrail_v1.database.dao.PlaceTagsDao
-import com.example.flovourtrail_v1.database.entity.PlaceTags
+import com.example.flovourtrail_v2.data.dao.PlaceTagsDao
+import com.example.flovourtrail_v2.data.entity.PlaceTags
 
 class PlaceTagsRepository(private val placeTagsDao: PlaceTagsDao) {
 

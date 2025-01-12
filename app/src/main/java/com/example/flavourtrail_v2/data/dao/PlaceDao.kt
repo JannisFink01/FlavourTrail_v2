@@ -1,11 +1,11 @@
-package com.example.flovourtrail_v1.database.dao
+package com.example.flovourtrail_v2.data.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Delete
-import com.example.flovourtrail_v1.database.entity.Place
+import com.example.flovourtrail_v2.data.entity.Place
 
 @Dao
 interface PlaceDao {
