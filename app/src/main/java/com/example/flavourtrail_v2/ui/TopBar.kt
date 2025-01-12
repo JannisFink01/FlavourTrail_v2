@@ -29,7 +29,7 @@ fun TopBar(userName: String, profileImageRes: Int) {
                 Image(
                     painter = painterResource(id = R.drawable.logo),
                     contentDescription = "App Logo",
-                    modifier = Modifier.size(40.dp),
+                    modifier = Modifier.size(35.dp),
                     contentScale = ContentScale.Fit
                 )
                 Spacer(modifier = Modifier.weight(1f))
