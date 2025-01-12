@@ -5,17 +5,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.flavourtrail_v2.ui.theme.FlavourTrail_v2Theme
 import com.example.flavourtrail_v2.ui.TopBar
 
@@ -34,9 +36,9 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 ) { innerPadding ->
-                    PlanYourRouteButton(
+                    MainContent(
                         modifier = Modifier.padding(innerPadding),
-                        onClick = {
+                        onPlanRouteClick = {
                             // Starte die PlanRouteActivity
                             val intent = Intent(this, PlanRouteActivity::class.java)
                             startActivity(intent)
@@ -49,44 +51,64 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun PlanYourRouteButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
-    Box(
+fun MainContent(
+    modifier: Modifier = Modifier,
+    onPlanRouteClick: () -> Unit
+) {
+    Column(
         modifier = modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Button "Plan Your Route" bleibt unverändert
         Button(
-            onClick = onClick,
+            onClick = onPlanRouteClick,
             modifier = Modifier
-                .padding(top = 32.dp)
+                .fillMaxWidth()
+                .padding(bottom = 24.dp)
         ) {
-            Text(text = "Plan your Route")
+            Text(text = "Plan Your Route")
             Spacer(modifier = Modifier.width(10.dp))
             Icon(
-            painter = painterResource(id = R.drawable.route),
-            contentDescription = "Location Icon",
-            modifier = Modifier.size(16.dp)
-        )
+                painter = painterResource(id = R.drawable.route),
+                contentDescription = "Route Icon",
+                modifier = Modifier.size(16.dp)
+            )
         }
+
+        // Neue Columns für "Map" und "Favorites"
+        Section(title = "Map")
+        Spacer(modifier = Modifier.height(24.dp))
+        Section(title = "Favorites")
+    }
+}
+
+@Composable
+fun Section(title: String) {
+    Column(
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color.LightGray)
+            .padding(16.dp)
+    ) {
+        Text(
+            text = title,
+            fontSize = 15.sp,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PlanYourRouteButtonPreview() {
+fun MainContentPreview() {
     FlavourTrail_v2Theme {
-        Scaffold(
-            topBar = {
-                TopBar(
-                    userName = "Preview User",
-                    profileImageRes = R.drawable.profile_user
-                )
-            }
-        ) {
-            PlanYourRouteButton(
-                modifier = Modifier.padding(it),
-                onClick = { /* Keine Aktion in der Preview */ }
-            )
-        }
+        MainContent(
+            onPlanRouteClick = { /* Keine Aktion in der Vorschau */ }
+        )
     }
 }
