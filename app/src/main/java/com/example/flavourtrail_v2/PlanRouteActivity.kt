@@ -13,7 +13,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -28,8 +30,11 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.launch
 import java.util.Locale
-import androidx.compose.runtime.MutableState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.text.font.FontWeight
+import com.example.flavourtrail_v2.data.AppDatabase
+import com.example.flavourtrail_v2.data.entity.PlaceTags
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -46,7 +51,24 @@ fun PlanRouteScreen(context: Context) {
     val cityName = remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
 
-    // Launcher to request location permission
+    val transportModeOptions = listOf("Car", "Public Transport", "Bike", "By foot")
+    val selectedTransportMode = remember { mutableStateOf("") }
+    val numberOfStops = remember { mutableStateOf("") }
+    var showDropdown by remember { mutableStateOf(false) }
+
+    val database = AppDatabase.getDatabase(context)
+    val placeTagsDao = database.placeTagsDao()
+    var placeTags by remember { mutableStateOf<List<PlaceTags>>(emptyList()) }
+    val selectedTags = remember { mutableStateListOf<PlaceTags>() }
+
+    // Lade Tags aus der Datenbank
+    LaunchedEffect(Unit) {
+        coroutineScope.launch {
+            placeTags = placeTagsDao.getAllPlaceTags()
+        }
+    }
+
+    // Launcher für Standortberechtigung
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -64,42 +86,196 @@ fun PlanRouteScreen(context: Context) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(Color.LightGray)
-                    .padding(16.dp)
+                modifier = Modifier.fillMaxWidth()
             ) {
+                // Überschrift oben
                 Text(
-                    text = "Choose your city",
+                    text = "Plan your Route",
                     fontSize = 20.sp,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 25.dp)
                 )
 
-                Button(
-                    onClick = {
-                        locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-                        coroutineScope.launch {
-                            fetchCurrentLocation(context, fusedLocationClient, cityName)
-                        }
-                    }
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.location_pin),
-                        contentDescription = "Location Icon",
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "My Location")
-                }
-
-                OutlinedTextField(
-                    value = cityName.value,
-                    onValueChange = { cityName.value = it },
-                    label = { Text("Enter city") },
+                // Erster Bereich: Stadt auswählen
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                )
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color.LightGray)
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = "Choose your city",
+                        fontSize = 15.sp,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+
+                    Button(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = {
+                            locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                            coroutineScope.launch {
+                                fetchCurrentLocation(context, fusedLocationClient, cityName)
+                            }
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.location_pin),
+                            contentDescription = "Location Icon",
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = "My Location")
+                    }
+
+                    OutlinedTextField(
+                        value = cityName.value,
+                        onValueChange = { cityName.value = it },
+                        label = { Text("Enter city") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Zweiter Bereich: Transportmodus und Stopps
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color.LightGray)
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = "Choose Transport mode and amount of stops",
+                        fontSize = 15.sp,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Box(modifier = Modifier.weight(1f)) {
+                            OutlinedTextField(
+                                value = selectedTransportMode.value,
+                                onValueChange = { newValue ->
+                                    if (transportModeOptions.contains(newValue)) {
+                                        selectedTransportMode.value = newValue
+                                    }
+                                },
+                                label = { Text("Transport mode") },
+                                modifier = Modifier.fillMaxWidth(),
+                                readOnly = true, // Verhindert direkte Eingabe
+                                trailingIcon = {
+                                    IconButton(onClick = { showDropdown = !showDropdown }) {
+                                        Icon(
+                                            painter = painterResource(id = android.R.drawable.arrow_down_float),
+                                            contentDescription = "Dropdown Icon"
+                                        )
+                                    }
+                                }
+                            )
+                            DropdownMenu(
+                                expanded = showDropdown,
+                                onDismissRequest = { showDropdown = false }
+                            ) {
+                                transportModeOptions.forEach { mode ->
+                                    DropdownMenuItem(
+                                        text = { Text(mode) },
+                                        onClick = {
+                                            selectedTransportMode.value = mode
+                                            showDropdown = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        OutlinedTextField(
+                            value = numberOfStops.value,
+                            onValueChange = { newValue ->
+                                if (newValue.isEmpty() || (newValue.toIntOrNull() in 1..9)) {
+                                    numberOfStops.value = newValue
+                                }
+                            },
+                            label = { Text("Stops") },
+                            modifier = Modifier.width(100.dp),
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Dritter Bereich: Präferenzen wählen
+                if (selectedTags.isNotEmpty()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        selectedTags.forEach { tag ->
+                            Chip(tagName = tag.tagName, onRemove = { selectedTags.remove(tag) })
+                        }
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color.LightGray)
+                        .padding(16.dp)
+                ) {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        item {
+                            Text(
+                                text = "Choose your preferences",
+                                fontSize = 15.sp,
+                                modifier = Modifier.padding(bottom = 16.dp)
+                            )
+                        }
+
+                        items(placeTags) { tag ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Checkbox(
+                                    checked = selectedTags.contains(tag),
+                                    onCheckedChange = { isChecked ->
+                                        if (isChecked) {
+                                            selectedTags.add(tag)
+                                        } else {
+                                            selectedTags.remove(tag)
+                                        }
+                                    }
+                                )
+                                Text(
+                                    text = tag.tagName,
+                                    modifier = Modifier.padding(start = 8.dp),
+                                    fontSize = 16.sp
+                                )
+                            }
+                        }
+                    }
+
+                }
             }
         }
     }
@@ -153,5 +329,31 @@ private fun getCityNameFromCoordinates(context: Context, latitude: Double, longi
     } catch (e: Exception) {
         Log.e("GeocoderError", "Error fetching city name: ${e.message}")
         "Error fetching city"
+    }
+}
+
+@Composable
+fun Chip(tagName: String, onRemove: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.primary)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = tagName,
+                color = Color.White,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            IconButton(onClick = onRemove) {
+                Icon(
+                    painter = painterResource(id = android.R.drawable.ic_menu_close_clear_cancel),
+                    contentDescription = "Remove Tag",
+                    tint = Color.White
+                )
+            }
+        }
     }
 }
