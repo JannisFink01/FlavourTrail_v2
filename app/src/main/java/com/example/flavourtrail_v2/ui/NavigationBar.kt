@@ -8,7 +8,7 @@ import androidx.compose.ui.res.painterResource
 import com.example.flavourtrail_v2.R
 
 @Composable
-fun NavigationBar(onItemSelected: (String) -> Unit) {
+fun CustomNavigationBar(onItemSelected: (String) -> Unit) {
     NavigationBar(
         modifier = Modifier.fillMaxWidth(),
         containerColor = MaterialTheme.colorScheme.primary
@@ -56,4 +56,3 @@ fun NavigationBar(onItemSelected: (String) -> Unit) {
         )
     }
 }
-
