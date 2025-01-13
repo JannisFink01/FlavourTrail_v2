@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
                         TopBar(
-                            userName = "Max Mustermann",
+                            userName = "John Doe",
                             profileImageRes = R.drawable.profile_user
                         )
                     }
