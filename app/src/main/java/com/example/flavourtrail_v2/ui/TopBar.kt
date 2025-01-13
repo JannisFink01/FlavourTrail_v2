@@ -8,6 +8,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import com.example.flavourtrail_v2.R
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.sp
@@ -38,7 +40,8 @@ fun TopBar(userName: String, profileImageRes: Int) {
                 Text(
                     text = userName,
                     style = MaterialTheme.typography.titleMedium,
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    color = Color.White // Text in Weiß
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -49,8 +52,10 @@ fun TopBar(userName: String, profileImageRes: Int) {
                     contentDescription = "Profilbild",
                     modifier = Modifier
                         .size(40.dp)
-                        .padding(4.dp)
+                        .padding(4.dp),
+                    colorFilter = ColorFilter.tint(Color.White) // Bild in Weiß einfärben
                 )
+
             }
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
