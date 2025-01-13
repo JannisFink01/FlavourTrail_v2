@@ -31,6 +31,8 @@ import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.launch
 import java.util.Locale
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.text.font.FontWeight
 import com.example.flavourtrail_v2.data.AppDatabase
@@ -61,6 +63,8 @@ fun PlanRouteScreen(context: Context) {
     var placeTags by remember { mutableStateOf<List<PlaceTags>>(emptyList()) }
     val selectedTags = remember { mutableStateListOf<PlaceTags>() }
 
+    val scrollState = rememberScrollState()
+
     // Lade Tags aus der Datenbank
     LaunchedEffect(Unit) {
         coroutineScope.launch {
@@ -86,7 +90,7 @@ fun PlanRouteScreen(context: Context) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().verticalScroll(scrollState)
             ) {
                 // Überschrift oben
                 Text(
@@ -276,6 +280,29 @@ fun PlanRouteScreen(context: Context) {
                     }
 
                 }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Buttons am Ende
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Button(
+                        onClick = { /* Trail AI Button Logic */ },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(text = "Trail AI")
+                    }
+
+                    Button(
+                        onClick = { /* Let's Go Button Logic */ },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(text = "Let's Go!")
+                    }
+                }
+
             }
         }
     }
