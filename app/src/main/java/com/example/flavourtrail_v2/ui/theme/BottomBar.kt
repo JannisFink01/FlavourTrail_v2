@@ -1,8 +1,12 @@
-package com.example.flovourtrail_v1.ui.theme
+package com.example.flavourtrail_v1.ui.theme
 
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import com.example.flavourtrail_v2.R

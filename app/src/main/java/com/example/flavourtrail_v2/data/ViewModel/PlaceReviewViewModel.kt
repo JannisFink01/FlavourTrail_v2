@@ -2,7 +2,6 @@ package com.example.flavourtrail_v2
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.flavourtrail_v2.data.AppDatabase
 import com.example.flavourtrail_v2.data.entity.PlaceReviewWithDetails
 import com.example.flavourtrail_v2.data.repository.PlaceReviewRepository
 import kotlinx.coroutines.flow.MutableStateFlow

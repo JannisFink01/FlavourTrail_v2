@@ -33,13 +33,12 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-//        val userDao = AppDatabase.getInstance(application).userDao()
-//        userRepository = UserRepository(userDao)
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val user = User(userId = 4, name = "Test User", email = "testuser@example.com", password = "password", premium = false)
-//            userRepository.insertUser(user)
-//        }
-           }
+        val userDao = AppDatabase.getInstance(application).userDao()
+        userRepository = UserRepository(userDao)
+        CoroutineScope(Dispatchers.IO).launch {
+            val user = userRepository.getUserById(1)
+        }
+    }
 }
 
 @Composable

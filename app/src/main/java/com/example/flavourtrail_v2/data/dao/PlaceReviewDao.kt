@@ -1,20 +1,21 @@
-package com.example.flovourtrail_v2.data.dao
+package com.example.flavourtrail_v2.data.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.example.flovourtrail_v2.data.entity.PlaceReview
-import com.example.flovourtrail_v2.data.entity.PlaceReviewWithDetails
+import com.example.flavourtrail_v2.data.entity.PlaceReview
+import com.example.flavourtrail_v2.data.entity.PlaceReviewWithDetails
 
 @Dao
 interface PlaceReviewDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPlaceReview(placeReview: PlaceReview): Long
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(vararg placeReviews: PlaceReview)
 
     @Update

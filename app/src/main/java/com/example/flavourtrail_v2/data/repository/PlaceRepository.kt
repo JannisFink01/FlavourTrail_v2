@@ -1,8 +1,8 @@
 package com.example.flavourtrail_v2.data.repository
 
 
-import com.example.flovourtrail_v2.data.dao.PlaceDao
-import com.example.flovourtrail_v2.data.entity.Place
+import com.example.flavourtrail_v2.data.dao.PlaceDao
+import com.example.flavourtrail_v2.data.entity.Place
 
 class PlaceRepository(private val placeDao: PlaceDao) {
 

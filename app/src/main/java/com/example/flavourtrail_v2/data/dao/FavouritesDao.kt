@@ -1,11 +1,11 @@
-package com.example.flovourtrail_v2.data.dao
+package com.example.flavourtrail_v2.data.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import androidx.room.Delete
-import com.example.flovourtrail_v2.data.entity.Favourites
+import com.example.flavourtrail_v2.data.entity.Favourites
 
 @Dao
 interface FavouritesDao {

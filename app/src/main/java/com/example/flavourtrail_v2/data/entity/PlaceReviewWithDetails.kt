@@ -1,10 +1,7 @@
-package com.example.flovourtrail_v2.data.entity
+package com.example.flavourtrail_v2.data.entity
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.example.flovourtrail_v1.database.entity.Place
-import com.example.flovourtrail_v1.database.entity.PlaceReview
-import com.example.flovourtrail_v1.database.entity.User
 
 data class PlaceReviewWithDetails(
     @Embedded val placeReview: PlaceReview,

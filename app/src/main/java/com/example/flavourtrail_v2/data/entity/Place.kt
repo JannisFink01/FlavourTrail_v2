@@ -1,4 +1,4 @@
-package com.example.flovourtrail_v2.data.entity
+package com.example.flavourtrail_v2.data.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -17,4 +17,5 @@ data class Place (
     @ColumnInfo(name = "latitude") val latitude: Double,
     @ColumnInfo(name = "longitude") val longitude: Double,
     @ColumnInfo(name = "description") val description: String,
+    @ColumnInfo(name="image") val image: String
 )

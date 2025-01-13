@@ -4,15 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -22,22 +19,27 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.flavourtrail_v2.R
+import com.example.flavourtrail_v2.data.entity.Place
+import com.example.flavourtrail_v2.data.entity.PlaceReview
 import com.example.flavourtrail_v2.data.entity.PlaceReviewWithDetails
+import com.example.flavourtrail_v2.data.entity.User
 import com.example.flavourtrail_v2.ui.StarRatingBar
-import com.example.flovourtrail_v1.database.entity.Place
-import com.example.flovourtrail_v1.database.entity.PlaceReview
-import com.example.flovourtrail_v1.database.entity.User
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class PlaceReviews : ComponentActivity() {
-    public val exampleReview = PlaceReviewWithDetails(
-        PlaceReview(1, 1, 1, 5, "Great place!"), User(
-            1, "Thorsten Schmitz", "thomas.r.marshall@example.com", "password", false
+    val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+    val mockDate = dateFormat.parse("10.09.2024")
+    val exampleReview = PlaceReviewWithDetails(
+        PlaceReview(1, 1, 1, 5, "Great place!", mockDate), User(
+            1,
+            "Thorsten Schmitz",
+            "thomas.r.marshall@example.com",
+            "password",
+            false,
+            image = "anomalieArt.jpg"
         ), Place(
             1,
             "Example Place",
@@ -47,7 +49,8 @@ class PlaceReviews : ComponentActivity() {
             "Example Postal Code",
             0.0,
             0.0,
-            "Example Description"
+            "Example Description",
+            "anomalieArt.jpg"
         )
     )
 
@@ -56,7 +59,7 @@ class PlaceReviews : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ReviewCard(
-                review = exampleReview, profileImageRes = R.drawable.profile_picture
+                review = exampleReview
             )
         }
 
@@ -65,7 +68,9 @@ class PlaceReviews : ComponentActivity() {
 
 
 @Composable
-fun ReviewCard(review: PlaceReviewWithDetails, profileImageRes: Int) {
+fun ReviewCard(review: PlaceReviewWithDetails) {
+    val dateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
+    val formattedDate = dateFormat.format(review.placeReview.date)
     Card(
         modifier = Modifier
             .padding(8.dp)
@@ -82,14 +87,7 @@ fun ReviewCard(review: PlaceReviewWithDetails, profileImageRes: Int) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    painter = painterResource(id = profileImageRes),
-                    contentDescription = "Profile Picture",
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(20.dp))
-                        .background(Color.Gray)
-                )
+
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = review.user.name, style = MaterialTheme.typography.bodyMedium
@@ -100,6 +98,12 @@ fun ReviewCard(review: PlaceReviewWithDetails, profileImageRes: Int) {
                 text = review.place.name,
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            val dateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
+            val date = dateFormat.parse("2024/09/10")
+            Text(
+                text = formattedDate, style = MaterialTheme.typography.bodySmall
             )
             Spacer(modifier = Modifier.height(4.dp))
             StarRatingBar(maxStars = 5, rating = review.placeReview.rating.toFloat())
@@ -114,9 +118,16 @@ fun ReviewCard(review: PlaceReviewWithDetails, profileImageRes: Int) {
 @Preview
 @Composable
 fun PreviewHeadline() {
+    val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+    val mockDate = dateFormat.parse("10.09.2024")
     val exampleReview = PlaceReviewWithDetails(
-        PlaceReview(1, 1, 1, 5, "Great place!"), User(
-            1, "Thorsten Schmitz", "thomas.r.marshall@example.com", "password", false
+        PlaceReview(1, 1, 1, 5, "Great place!", mockDate), User(
+            1,
+            "Thorsten Schmitz",
+            "thomas.r.marshall@example.com",
+            "password",
+            false,
+            image = "anomalieArt.jpg"
         ), Place(
             1,
             "Example Place",
@@ -126,10 +137,11 @@ fun PreviewHeadline() {
             "Example Postal Code",
             0.0,
             0.0,
-            "Example Description"
+            "Example Description",
+            "anomalieArt.jpg"
         )
     )
     ReviewCard(
-        review = exampleReview, profileImageRes = R.drawable.profile_picture
+        review = exampleReview,
     )
 }

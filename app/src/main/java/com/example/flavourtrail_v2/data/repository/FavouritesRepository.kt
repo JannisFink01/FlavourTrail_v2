@@ -1,8 +1,8 @@
 package com.example.flavourtrail_v2.data.repository
 
 
-import com.example.flovourtrail_v2.data.dao.FavouritesDao
-import com.example.flovourtrail_v2.data.entity.Favourites
+import com.example.flavourtrail_v2.data.dao.FavouritesDao
+import com.example.flavourtrail_v2.data.entity.Favourites
 
 class FavouritesRepository(private val favouritesDao: FavouritesDao) {
 
@@ -12,7 +12,8 @@ class FavouritesRepository(private val favouritesDao: FavouritesDao) {
 
     suspend fun insertFavourite(favourite: Favourites) = favouritesDao.insert(favourite)
 
-    suspend fun instertAllFavourites(vararg favourites: Favourites) = favouritesDao.insertAll(*favourites)
+    suspend fun instertAllFavourites(vararg favourites: Favourites) =
+        favouritesDao.insertAll(*favourites)
 
     suspend fun deleteFavourite(favourite: Favourites) = favouritesDao.delete(favourite)
 

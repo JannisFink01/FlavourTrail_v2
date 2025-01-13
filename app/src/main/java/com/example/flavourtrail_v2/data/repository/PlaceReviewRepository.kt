@@ -1,9 +1,9 @@
 package com.example.flavourtrail_v2.data.repository
 
 
-import com.example.flovourtrail_v2.data.dao.PlaceReviewDao
-import com.example.flovourtrail_v2.data.entity.PlaceReview
-import com.example.flovourtrail_v2.data.entity.PlaceReviewWithDetails
+import com.example.flavourtrail_v2.data.dao.PlaceReviewDao
+import com.example.flavourtrail_v2.data.entity.PlaceReview
+import com.example.flavourtrail_v2.data.entity.PlaceReviewWithDetails
 
 class PlaceReviewRepository(private val placeReviewDao: PlaceReviewDao) {
 

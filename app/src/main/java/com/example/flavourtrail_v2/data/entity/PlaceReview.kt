@@ -1,10 +1,11 @@
-package com.example.flovourtrail_v2.data.entity
+package com.example.flavourtrail_v2.data.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import java.util.Date
 
 @Entity(tableName = "PlaceReview",
     foreignKeys = [
@@ -33,4 +34,5 @@ data class PlaceReview (
     @ColumnInfo(name = "user_id") val userId: Int,
     @ColumnInfo(name = "rating") val rating: Int,
     @ColumnInfo(name = "comment") val comment: String,
+    @ColumnInfo(name = "date") val date: Date,
 )
