@@ -121,7 +121,14 @@ fun PreviewHeadline() {
     val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
     val mockDate = dateFormat.parse("10.09.2024")
     val exampleReview = PlaceReviewWithDetails(
-        PlaceReview(1, 1, 1, 5, "Great place!", mockDate), User(
+        PlaceReview(
+            1,
+            1,
+            1,
+            5,
+            "Great place!",
+            mockDate),
+        User(
             1,
             "Thorsten Schmitz",
             "thomas.r.marshall@example.com",
