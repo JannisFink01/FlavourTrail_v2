@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.Color
 import com.example.flavourtrail_v2.R
 
 @Composable
@@ -19,11 +20,15 @@ fun CustomNavigationBar(onItemSelected: (String) -> Unit) {
             icon = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_home),
-                    contentDescription = "Home Icon"
+                    contentDescription = "Home Icon",
+                    tint = Color.White // Ensure the icon is white
                 )
             },
             label = {
-                Text("Home", style = MaterialTheme.typography.labelSmall)
+                Text(
+                    text = "Home",
+                    style = MaterialTheme.typography.labelSmall.copy(color = Color.White) // Make text white
+                )
             }
         )
 
@@ -33,11 +38,15 @@ fun CustomNavigationBar(onItemSelected: (String) -> Unit) {
             icon = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_routes),
-                    contentDescription = "Routes Icon"
+                    contentDescription = "Routes Icon",
+                    tint = Color.White // Ensure the icon is white
                 )
             },
             label = {
-                Text("Routes", style = MaterialTheme.typography.labelSmall)
+                Text(
+                    text = "Routes",
+                    style = MaterialTheme.typography.labelSmall.copy(color = Color.White) // Make text white
+                )
             }
         )
 
@@ -47,11 +56,15 @@ fun CustomNavigationBar(onItemSelected: (String) -> Unit) {
             icon = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_premium),
-                    contentDescription = "Premium Icon"
+                    contentDescription = "Premium Icon",
+                    tint = Color.White // Ensure the icon is white
                 )
             },
             label = {
-                Text("Premium", style = MaterialTheme.typography.labelSmall)
+                Text(
+                    text = "Premium",
+                    style = MaterialTheme.typography.labelSmall.copy(color = Color.White) // Make text white
+                )
             }
         )
     }
