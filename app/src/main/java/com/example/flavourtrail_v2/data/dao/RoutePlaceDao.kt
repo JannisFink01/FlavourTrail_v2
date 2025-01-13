@@ -1,19 +1,20 @@
-package com.example.flovourtrail_v1.database.dao
+package com.example.flavourtrail_v2.data.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import androidx.room.Delete
-import com.example.flovourtrail_v1.database.entity.RoutePlace
+import com.example.flavourtrail_v2.data.entity.RoutePlace
 
 @Dao
 interface RoutePlaceDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(routePlace: RoutePlace)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(vararg routePlaces: RoutePlace)
 
     @Update
