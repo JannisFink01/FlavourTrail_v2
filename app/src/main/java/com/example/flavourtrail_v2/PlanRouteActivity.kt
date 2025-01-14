@@ -2,43 +2,62 @@
 
 package com.example.flavourtrail_v2
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Geocoder
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.flavourtrail_v2.ui.theme.FlavourTrail_v2Theme
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import kotlinx.coroutines.launch
-import java.util.Locale
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.text.font.FontWeight
-import com.example.flavourtrail_v2.data.AppDatabase
-import com.example.flavourtrail_v2.data.entity.PlaceTags
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Locale
 
 class PlanRouteActivity : BaseActivity() {
     @Composable
@@ -58,28 +77,23 @@ fun PlanRouteScreen(context: Context) {
     val numberOfStops = remember { mutableStateOf("") }
     var showDropdown by remember { mutableStateOf(false) }
 
-    val database = AppDatabase.getInstance(context)
-    val placeTagsDao = database.placeTagsDao()
-    var placeTags by remember { mutableStateOf<List<PlaceTags>>(emptyList()) }
-    val selectedTags = remember { mutableStateListOf<PlaceTags>() }
+    // Liste der Tags
+    val staticPlaceTags = listOf(
+        "Club",
+        "Bar",
+        "Biergarten",
+        "Café",
+        "Cocktails",
+        "Mocktails",
+        "Craft beer",
+        "Rooftop",
+        "Beach view",
+        "Live music"
+    )
+
+    val selectedTags = remember { mutableStateListOf<String>() }
 
     val scrollState = rememberScrollState()
-
-    // Lade Tags aus der Datenbank
-    LaunchedEffect(Unit) {
-        coroutineScope.launch {
-            placeTags = placeTagsDao.getAllPlaceTags()
-        }
-    }
-
-    // Launcher für Standortberechtigung
-    val locationPermissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (!isGranted) {
-            Toast.makeText(context, "Location permission denied", Toast.LENGTH_SHORT).show()
-        }
-    }
 
     FlavourTrail_v2Theme {
         Box(
@@ -119,7 +133,6 @@ fun PlanRouteScreen(context: Context) {
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
-                            locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
                             coroutineScope.launch {
                                 fetchCurrentLocation(context, fusedLocationClient, cityName)
                             }
@@ -230,7 +243,7 @@ fun PlanRouteScreen(context: Context) {
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         selectedTags.forEach { tag ->
-                            Chip(tagName = tag.tagName, onRemove = { selectedTags.remove(tag) })
+                            Chip(tagName = tag, onRemove = { selectedTags.remove(tag) })
                         }
                     }
                 }
@@ -255,7 +268,7 @@ fun PlanRouteScreen(context: Context) {
                             )
                         }
 
-                        items(placeTags) { tag ->
+                        items(staticPlaceTags) { tag ->
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.fillMaxWidth()
@@ -271,7 +284,7 @@ fun PlanRouteScreen(context: Context) {
                                     }
                                 )
                                 Text(
-                                    text = tag.tagName,
+                                    text = tag,
                                     modifier = Modifier.padding(start = 8.dp),
                                     fontSize = 16.sp
                                 )
@@ -307,6 +320,7 @@ fun PlanRouteScreen(context: Context) {
         }
     }
 }
+
 
 @SuppressLint("MissingPermission")
 suspend fun fetchCurrentLocation(
