@@ -80,9 +80,9 @@ fun MainContent(
             Text(text = "Plan Your Route")
             Spacer(modifier = Modifier.width(10.dp))
             Icon(
-                painter = painterResource(id = R.drawable.route),
+                painter = painterResource(id = R.drawable.routes),
                 contentDescription = "Route Icon",
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(20.dp)
             )
         }
 
