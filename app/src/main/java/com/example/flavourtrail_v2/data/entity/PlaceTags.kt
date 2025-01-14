@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.example.flovourtrail_v1.database.entity.Place
 
 @Entity(tableName = "Place_Tags", foreignKeys = [
     ForeignKey(

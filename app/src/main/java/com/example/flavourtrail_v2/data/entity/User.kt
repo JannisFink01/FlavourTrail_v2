@@ -1,4 +1,4 @@
-package com.example.flovourtrail_v1.database.entity
+package com.example.flavourtrail_v2.data.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -13,4 +13,5 @@ data class User(
     @ColumnInfo(name = "email") val email: String,
     @ColumnInfo(name = "password") val password: String,
     @ColumnInfo(name = "preimum") val premium: Boolean,
+    @ColumnInfo(name="image") val image: String
 )
