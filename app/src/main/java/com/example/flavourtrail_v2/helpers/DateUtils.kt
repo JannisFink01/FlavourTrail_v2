@@ -6,11 +6,10 @@ import java.util.Locale
 
 object DateUtils {
     fun parseDate(dateString: String): Date? {
+        val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
         return try {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             dateFormat.parse(dateString)
         } catch (e: Exception) {
-            e.printStackTrace()
             null
         }
     }

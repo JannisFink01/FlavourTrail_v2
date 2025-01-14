@@ -321,7 +321,39 @@ abstract class AppDatabase : RoomDatabase() {
                                         userId = 1,
                                         rating = 5,
                                         comment = "Amazing place with great vibes!",
-                                        date = parseDate("10.09.2024")?: Date()
+                                        date = parseDate("10.09.2024") ?: Date()
+                                    ),
+                                    PlaceReview(
+                                        reviewId = 3,
+                                        placeId = 1,
+                                        userId = 1,
+                                        rating = 4,
+                                        comment = "Nice place to relax and have a beer.",
+                                        date = parseDate("12.09.2024") ?: Date()
+                                    ),
+                                    PlaceReview(
+                                        reviewId = 5,
+                                        placeId = 1,
+                                        userId = 1,
+                                        rating = 3,
+                                        comment = "Charming café with delicious food.",
+                                        date = parseDate("08.09.2024") ?: Date()
+                                    ),
+                                    PlaceReview(
+                                        reviewId = 7,
+                                        placeId = 1,
+                                        userId = 1,
+                                        rating = 4,
+                                        comment = "Unique club with artistic focus.",
+                                        date = parseDate("05.04.2024") ?: Date()
+                                    ),
+                                    PlaceReview(
+                                        reviewId = 11,
+                                        placeId = 1,
+                                        userId = 2,
+                                        rating = 5,
+                                        comment = "Fantastic place, highly recommend!",
+                                        date = parseDate("09.12.2024") ?: Date()
                                     ),
                                     PlaceReview(
                                         reviewId = 2,
@@ -343,7 +375,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         reviewId = 4,
                                         placeId = 4,
                                         userId = 2,
-                                        rating = 5,
+                                        rating = 2,
                                         comment = "Stylish bar with a great view.",
                                         date = parseDate("13.09.2024")?:Date()
                                     ),

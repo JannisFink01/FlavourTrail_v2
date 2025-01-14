@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class PlaceReviewViewModel(private val repository: PlaceReviewRepository) : ViewModel() {
+open class PlaceReviewViewModel(private val repository: PlaceReviewRepository) : ViewModel() {
 
     private val _reviews = MutableStateFlow<List<PlaceReviewWithDetails>>(emptyList())
     val reviews: StateFlow<List<PlaceReviewWithDetails>> = _reviews
