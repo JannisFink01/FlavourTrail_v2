@@ -58,13 +58,19 @@ fun PlanRouteScreen(context: Context) {
         "Club",
         "Bar",
         "Biergarten",
+        "Restaurant",
         "Café",
         "Cocktails",
         "Mocktails",
         "Craft beer",
         "Rooftop",
         "Beach view",
-        "Live music"
+        "Live music",
+        "Vegan",
+        "Vegetarian",
+        "Kid-friendly",
+        "Pet-friendly",
+        "Sports viewing"
     )
 
     val selectedTags = remember { mutableStateListOf<String>() }
