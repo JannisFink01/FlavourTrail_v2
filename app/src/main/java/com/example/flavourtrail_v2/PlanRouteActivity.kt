@@ -58,7 +58,7 @@ fun PlanRouteScreen(context: Context) {
     val numberOfStops = remember { mutableStateOf("") }
     var showDropdown by remember { mutableStateOf(false) }
 
-    val database = AppDatabase.getDatabase(context)
+    val database = AppDatabase.getInstance(context)
     val placeTagsDao = database.placeTagsDao()
     var placeTags by remember { mutableStateOf<List<PlaceTags>>(emptyList()) }
     val selectedTags = remember { mutableStateListOf<PlaceTags>() }
