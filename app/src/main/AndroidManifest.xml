@@ -14,8 +14,8 @@
         android:theme="@style/Theme.FlavourTrail_v2"
         tools:targetApi="31">
         <activity
-            android:name=".RviewActivity"
-            android:exported="false"
+            android:name=".ReviewActivity"
+            android:exported="true"
             android:label="@string/title_activity_rview"
             android:theme="@style/Theme.FlavourTrail_v2" />
         <activity
@@ -27,6 +27,11 @@
             android:name=".RouteActivity"
             android:exported="false"
             android:label="RouteActivity"
+            android:theme="@style/Theme.FlavourTrail_v2" />
+        <activity
+            android:name=".DetailsActivity"
+            android:exported="false"
+            android:label="DetailsActivity"
             android:theme="@style/Theme.FlavourTrail_v2" />
         <activity
             android:name=".MainActivity"
