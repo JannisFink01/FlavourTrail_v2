@@ -49,19 +49,28 @@ class RouteActivity : BaseActivity() {
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RouteScreen() {
     val context = LocalContext.current
+
+    // Safely get route_id from the Intent
+    val routeIdFromIntent = (context as? RouteActivity)?.intent?.getIntExtra("ROUTE_ID", -1) ?: -1
+
+    // Safely get numberOfStops from the Intent
     val numberOfStops = (context as? RouteActivity)?.intent?.getIntExtra("numberOfStops", 0) ?: 0
 
-    // Determine selected route based on number of stops
-    val defaultRoute = when (numberOfStops) {
-        5 -> 1 // Route 1 for input 5
-        4 -> 2 // Route 2 for input 4
-        else -> 2 // Default to Route 2 for other values
+    // Determine the route_id based on numberOfStops only if routeIdFromIntent is not set
+    val routeId = if (routeIdFromIntent != -1) {
+        routeIdFromIntent
+    } else {
+        when (numberOfStops) {
+            5 -> 1 // Route 1 for 5 stops
+            4 -> 2 // Route 2 for 4 stops
+            else -> 2 // Default to Route 2
+        }
     }
-    val selectedRoute by remember { mutableStateOf(defaultRoute) }
 
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
 
@@ -72,12 +81,14 @@ fun RouteScreen() {
     val database = AppDatabase.getInstance(context)
     val routePlaceDao = database.routePlaceDao()
     val placeDao = database.placeDao()
+    val routeDao = database.routeDao()
 
     var placeNames by remember { mutableStateOf<List<String>>(emptyList()) }
     var placeTypes by remember { mutableStateOf<List<String>>(emptyList()) }
-    val routeId1 = 1
-    val routeId2 = 2
+    var routeName by remember { mutableStateOf("") }
+    var routeDescription by remember { mutableStateOf("") }
 
+    // Fetch current location
     LaunchedEffect(Unit) {
         if (ContextCompat.checkSelfPermission(
                 context,
@@ -94,14 +105,17 @@ fun RouteScreen() {
                 }
             }
         } else {
-            currentLocation = LatLng(0.0, 0.0)
+            currentLocation = LatLng(0.0, 0.0) // Default location if permissions are missing
         }
     }
 
-    LaunchedEffect(selectedRoute) {
-        val allRoutePlaces = routePlaceDao.getAllRoutePlaces()
-        val routeId = if (selectedRoute == 1) routeId1 else routeId2
+    // Fetch route and place data based on the selected route
+    LaunchedEffect(routeId) {
+        val route = routeDao.getRouteById(routeId)
+        routeName = route?.name ?: "Unknown Route"
+        routeDescription = route?.description ?: "No description available."
 
+        val allRoutePlaces = routePlaceDao.getAllRoutePlaces()
         val placeIds = allRoutePlaces.filter { it.routeId == routeId }.map { it.placeId }
 
         val places = placeIds.mapNotNull { placeId ->
@@ -120,6 +134,9 @@ fun RouteScreen() {
     }
 
     Scaffold(
+        topBar = {
+            TopAppBar(title = { Text(routeName) })
+        },
         bottomBar = {
             ButtonBar(
                 onSaveClick = { /* Handle Save Click */ },
@@ -134,7 +151,15 @@ fun RouteScreen() {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // Search Bar with Buttons (Added back into the UI)
+            // Display route description
+            Text(
+                text = routeDescription,
+                style = MaterialTheme.typography.bodyLarge
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Search bar with buttons
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -142,17 +167,10 @@ fun RouteScreen() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Search Bar
                 OutlinedTextField(
                     value = searchText,
                     onValueChange = { newText -> searchText = newText },
                     label = { Text("Search") },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_search),
-                            contentDescription = "Search Icon"
-                        )
-                    },
                     modifier = Modifier
                         .weight(1f)
                         .padding(end = 8.dp)
@@ -160,35 +178,11 @@ fun RouteScreen() {
                     singleLine = true,
                     shape = RoundedCornerShape(16.dp)
                 )
-
-                // Right Buttons
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    IconButton(onClick = { /* Handle Right Button 1 Click */ }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_fullscreen),
-                            contentDescription = "Fullscreen Icon"
-                        )
-                    }
-
-                    IconButton(onClick = { /* Handle Right Button 2 Click */ }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_share),
-                            contentDescription = "Share Icon"
-                        )
-                    }
-
-                    IconButton(onClick = { /* Handle Right Button 3 Click */ }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_download),
-                            contentDescription = "Download Icon"
-                        )
-                    }
-                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Google Maps
+            // Display Google Map
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -206,48 +200,30 @@ fun RouteScreen() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Display List of Place Names with Images and Type
+            // Display list of places
             if (filteredPlaceNames.isNotEmpty()) {
                 LazyColumn {
                     items(filteredPlaceNames) { place ->
                         val placeIndex = placeNames.indexOf(place)
-                        val imageBitmap = loadImageFromAssets("${place.split(" ")[0]}.jpg", context)
                         val placeType = filteredPlaceTypes[placeIndex]
 
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            if (imageBitmap != null) {
-                                Image(
-                                    bitmap = imageBitmap,
-                                    contentDescription = "${place.split(" ")[0]} Image",
-                                    modifier = Modifier
-                                        .size(50.dp)
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .background(Color.Gray)
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.width(8.dp))
-
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = "$place",
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                                Text(
-                                    text = "$placeType",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = Color.Gray
-                                )
-                            }
+                        Column(modifier = Modifier.padding(8.dp)) {
+                            Text(
+                                text = place,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = placeType,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.Gray
+                            )
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
             } else {
-                Text(text = "No places found for selected route.")
+                Text("No places found for this route.")
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
