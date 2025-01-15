@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import com.example.flavourtrail_v2.ui.CustomNavigationBar
 import com.example.flavourtrail_v2.ui.theme.FlavourTrail_v2Theme
 import com.example.flavourtrail_v2.ui.TopBar
 import com.google.android.gms.location.LocationServices
@@ -36,12 +37,19 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FlavourTrail_v2Theme {
+                var selectedTab by remember { mutableStateOf("") }
+
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
                         TopBar(
                             userName = "John Doe",
                             profileImageRes = R.drawable.profile_user
+                        )
+                    },
+                    bottomBar = {
+                        CustomNavigationBar(
+                            onItemSelected = { selectedTab = it }
                         )
                     }
                 ) { innerPadding ->
@@ -58,6 +66,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 
 @Composable
 fun MainContent(
