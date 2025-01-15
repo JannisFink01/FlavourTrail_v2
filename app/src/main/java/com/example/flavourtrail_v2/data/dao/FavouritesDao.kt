@@ -3,6 +3,7 @@ package com.example.flavourtrail_v2.data.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.flavourtrail_v2.data.entity.Favourites
@@ -10,10 +11,10 @@ import com.example.flavourtrail_v2.data.entity.Favourites
 @Dao
 interface FavouritesDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(favourites: Favourites)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(vararg favourites: Favourites)
 
     @Update
