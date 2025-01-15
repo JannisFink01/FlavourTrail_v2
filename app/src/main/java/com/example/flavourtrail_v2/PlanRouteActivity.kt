@@ -294,6 +294,7 @@ fun PlanRouteScreen(context: Context) {
                     Button(
                         onClick = {
                             val intent = Intent(context, RouteActivity::class.java)
+                            intent.putExtra("numberOfStops", numberOfStops.value.toIntOrNull() ?: 0)
                             context.startActivity(intent)
                         },
                         modifier = Modifier.weight(1f)
