@@ -1,15 +1,27 @@
 package com.example.flavourtrail_v2
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
-
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.rememberCameraPositionState
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 
 class RouteActivity : BaseActivity() {
     @Composable
@@ -22,6 +34,33 @@ class RouteActivity : BaseActivity() {
 @Composable
 fun RouteScreen() {
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
+
+    // State for current location
+    val context = LocalContext.current
+    val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
+    val cameraPositionState = rememberCameraPositionState()
+    var currentLocation by remember { mutableStateOf<LatLng?>(null) }
+
+    // Fetch current location
+    LaunchedEffect(Unit) {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    currentLocation = LatLng(location.latitude, location.longitude)
+                    cameraPositionState.position = CameraPosition.fromLatLngZoom(
+                        currentLocation!!,
+                        15f // Zoom level
+                    )
+                }
+            }
+        } else {
+            currentLocation = LatLng(0.0, 0.0) // Default position if no permissions
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -45,7 +84,7 @@ fun RouteScreen() {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // Integrated Search Bar with Buttons placed directly below the TopAppBar
+            // Search Bar with Buttons
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -60,7 +99,7 @@ fun RouteScreen() {
                     label = { Text("Search") },
                     leadingIcon = {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_search), // Replace with your search icon
+                            painter = painterResource(id = R.drawable.ic_search),
                             contentDescription = "Search Icon"
                         )
                     },
@@ -76,21 +115,21 @@ fun RouteScreen() {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     IconButton(onClick = { /* Handle Right Button 1 Click */ }) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_fullscreen), // Replace with your icon
+                            painter = painterResource(id = R.drawable.ic_fullscreen),
                             contentDescription = "Fullscreen Icon"
                         )
                     }
 
                     IconButton(onClick = { /* Handle Right Button 2 Click */ }) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_share), // Replace with your icon
+                            painter = painterResource(id = R.drawable.ic_share),
                             contentDescription = "Share Icon"
                         )
                     }
 
                     IconButton(onClick = { /* Handle Right Button 3 Click */ }) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_download), // Replace with your icon
+                            painter = painterResource(id = R.drawable.ic_download),
                             contentDescription = "Download Icon"
                         )
                     }
@@ -99,9 +138,25 @@ fun RouteScreen() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Other content can go here (e.g., list of routes or whatever content you need)
+            // Google Maps
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(250.dp) // Height of the map
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.LightGray)
+            ) {
+                if (currentLocation != null) {
+                    GoogleMap(
+                        modifier = Modifier.matchParentSize(),
+                        cameraPositionState = cameraPositionState
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
+
+            // Other content can go here (e.g., list of routes or whatever content you need)
         }
     }
 }
@@ -172,4 +227,10 @@ fun ButtonBar(
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RouteActivityPrev() {
+    RouteScreen()
 }
