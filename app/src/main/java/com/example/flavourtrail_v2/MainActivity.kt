@@ -248,7 +248,7 @@ fun FavoritesSection(routes: List<Route>) {
         if (routes.isEmpty()) {
             // Zeige eine Nachricht an, wenn keine Routen vorhanden sind
             Text(
-                text = "Keine Favoriten verfügbar",
+                text = "No Favorites available",
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.Gray
             )
