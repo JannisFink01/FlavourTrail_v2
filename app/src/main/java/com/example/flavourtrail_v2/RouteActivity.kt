@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.border
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
@@ -29,6 +30,8 @@ import com.example.flavourtrail_v2.data.AppDatabase
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.ImageBitmap
 import java.io.InputStream
+import androidx.compose.foundation.lazy.itemsIndexed
+
 
 fun loadImageFromAssets(imageName: String, context: Context): ImageBitmap? {
     return try {
@@ -49,7 +52,7 @@ class RouteActivity : BaseActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+//@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RouteScreen() {
     val context = LocalContext.current
@@ -134,7 +137,7 @@ fun RouteScreen() {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // Search Bar with Buttons (Added back into the UI)
+            // Search Bar with Buttons
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -209,12 +212,16 @@ fun RouteScreen() {
             // Display List of Place Names with Images and Type
             if (filteredPlaceNames.isNotEmpty()) {
                 LazyColumn {
-                    items(filteredPlaceNames) { place ->
+                    itemsIndexed(filteredPlaceNames) { index, place ->
                         val placeIndex = placeNames.indexOf(place)
                         val imageBitmap = loadImageFromAssets("${place.split(" ")[0]}.jpg", context)
                         val placeType = filteredPlaceTypes[placeIndex]
 
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            // Display Image
                             if (imageBitmap != null) {
                                 Image(
                                     bitmap = imageBitmap,
@@ -228,21 +235,41 @@ fun RouteScreen() {
 
                             Spacer(modifier = Modifier.width(8.dp))
 
+                            // Display Name and Type
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
-                                    text = "$place",
+                                    text = place,
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                                 Text(
-                                    text = "$placeType",
+                                    text = placeType,
                                     style = MaterialTheme.typography.bodySmall,
                                     color = Color.Gray
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.weight(1f))
+
+                            // Display Number with Frame on the right
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .size(30.dp)  // Adjust the size of the frame
+                                    .clip(RoundedCornerShape(50))  // Round the frame
+                                    .border(2.dp, Color.Black, RoundedCornerShape(50))  // Border around the frame
+                                    .padding(4.dp)  // Padding inside the frame
+                            ) {
+                                Text(
+                                    text = (index + 1).toString(),
+                                    style = MaterialTheme.typography.bodySmall.copy(color = Color.Black),
+                                    textAlign = TextAlign.Center
                                 )
                             }
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
+
             } else {
                 Text(text = "No places found for selected route.")
             }
