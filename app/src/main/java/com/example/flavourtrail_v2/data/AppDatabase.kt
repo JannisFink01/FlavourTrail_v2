@@ -30,10 +30,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-
-/**
- * Database class with a singleton Instance object.
- */
 @Database(
     entities = [
         Favourites::class,
@@ -59,31 +55,11 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun routeReviewDao(): RouteReviewDao
     abstract fun userDao(): UserDao
 
-    //    companion object {
-//        const val DATABASE_NAME = "app_database"
-//
-//        @Volatile
-//        private var Instance: AppDatabase? = null
-//
-//        fun getInstance(context: Context): AppDatabase {
-//            return Instance ?: synchronized(this) {
-//              Room.databaseBuilder(
-//                    context.applicationContext,
-//                    AppDatabase::class.java,
-//                    DATABASE_NAME
-//                )
-//                  .build()
-//                    .also { Instance = it }
-//            }
-//        }
-//    }
-//}
     companion object {
         const val DATABASE_NAME = "app_database"
 
         @Volatile
         private var instance: AppDatabase? = null
-
 
         fun getInstance(context: Context): AppDatabase =
             instance ?: synchronized(this) {
@@ -109,7 +85,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         "alice.mueller@example.com",
                                         "securePass123",
                                         true,
-                                        "userGirl.jpg"
+                                        "user_girl"
                                     ),
                                     User(
                                         2,
@@ -117,7 +93,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         "tom.schneider@example.com",
                                         "password789",
                                         false,
-                                        "guyInBar.jpg"
+                                        "guy_in_bar"
                                     )
                                 )
 
@@ -133,7 +109,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         52.497587,
                                         13.503745,
                                         "Ein legendärer Open-Air-Club mit einem einzigartigen Festival-Vibe.",
-                                        "Sisyphos.jpg"
+                                        "sisyphos.jpg"
                                     ),
                                     Place(
                                         2,
@@ -145,7 +121,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         52.511282,
                                         13.439657,
                                         "Der weltweit bekannte Techno-Club mit unvergesslicher Atmosphäre.",
-                                        "Berghain.jpg"
+                                        "berghain.jpg"
                                     ),
                                     Place(
                                         3,
@@ -157,7 +133,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         52.540120,
                                         13.413460,
                                         "Berlins ältester Biergarten mit einer entspannten Atmosphäre.",
-                                        "PraterGarten.jpg"
+                                        "prate_garten.jpg"
                                     ),
                                     Place(
                                         4,
@@ -169,7 +145,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         52.507580,
                                         13.336702,
                                         "Eine stylische Bar mit atemberaubendem Blick auf den Berliner Zoo.",
-                                        "MonkeyBar.jpg"
+                                        "monkey_bar.jpg"
                                     ),
                                     Place(
                                         5,
@@ -194,7 +170,6 @@ abstract class AppDatabase : RoomDatabase() {
                                         13.444854,
                                         "Ein Rooftop-Bar-Highlight mit Livemusik und einem atemberaubenden Blick über Berlin.",
                                         "klunkerkranich.jpg"
-
                                     ),
                                     Place(
                                         7,
@@ -206,7 +181,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         52.534013,
                                         13.444503,
                                         "Ein einzigartiger Club mit künstlerischem Fokus und alternativer Musik.",
-                                        "anomalieArt.jpg"
+                                        "anomalie_art.jpg"
                                     ),
                                     Place(
                                         8,
@@ -218,7 +193,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         52.499002,
                                         13.418398,
                                         "Ein beliebter Treffpunkt in Kreuzberg mit einer entspannten Atmosphäre und guten Drinks.",
-                                        "CaféLuzia.jpg"
+                                        "cafe_luzia.jpg"
                                     ),
                                     Place(
                                         9,
@@ -230,7 +205,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         52.513366,
                                         13.391569,
                                         "Eine elegante Bar mit klassischen Cocktails und Fotos von Helmut Newton.",
-                                        "NewtonBar.jpg"
+                                        "newton_bar.jpg"
                                     ),
                                     Place(
                                         10,
@@ -242,7 +217,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         52.529011,
                                         13.401138,
                                         "Ein hipper Coworking-Space und Café, ideal für Freelancer.",
-                                        "st.Oberholz.jpg"
+                                        "st_oberholz.jpg"
                                     )
                                 )
                                 // Insert Routes
@@ -316,7 +291,7 @@ abstract class AppDatabase : RoomDatabase() {
                                 )
                                 placeReviewDao().insertAll(
                                     PlaceReview(
-                                        reviewId = 1,
+                                        reviewId = 3,
                                         placeId = 1,
                                         userId = 1,
                                         rating = 5,
@@ -324,7 +299,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         date = parseDate("10.09.2024") ?: Date()
                                     ),
                                     PlaceReview(
-                                        reviewId = 3,
+                                        reviewId = 4,
                                         placeId = 1,
                                         userId = 1,
                                         rating = 4,
@@ -339,16 +314,9 @@ abstract class AppDatabase : RoomDatabase() {
                                         comment = "Charming café with delicious food.",
                                         date = parseDate("08.09.2024") ?: Date()
                                     ),
+
                                     PlaceReview(
-                                        reviewId = 7,
-                                        placeId = 1,
-                                        userId = 1,
-                                        rating = 4,
-                                        comment = "Unique club with artistic focus.",
-                                        date = parseDate("05.04.2024") ?: Date()
-                                    ),
-                                    PlaceReview(
-                                        reviewId = 11,
+                                        reviewId = 6,
                                         placeId = 1,
                                         userId = 2,
                                         rating = 5,
@@ -356,77 +324,85 @@ abstract class AppDatabase : RoomDatabase() {
                                         date = parseDate("09.12.2024") ?: Date()
                                     ),
                                     PlaceReview(
-                                        reviewId = 2,
+                                        reviewId = 7,
                                         placeId = 2,
                                         userId = 2,
                                         rating = 4,
                                         comment = "Great music and atmosphere.",
-                                        date = parseDate("11.09.2024")?:Date()
+                                        date = parseDate("11.09.2024") ?: Date()
                                     ),
                                     PlaceReview(
-                                        reviewId = 3,
+                                        reviewId = 8,
                                         placeId = 3,
                                         userId = 1,
                                         rating = 4,
                                         comment = "Nice place to relax and have a beer.",
-                                        date = parseDate("12.09.2024")?: Date()
+                                        date = parseDate("12.09.2024") ?: Date()
                                     ),
                                     PlaceReview(
-                                        reviewId = 4,
+                                        reviewId = 9,
                                         placeId = 4,
                                         userId = 2,
                                         rating = 2,
                                         comment = "Stylish bar with a great view.",
-                                        date = parseDate("13.09.2024")?:Date()
+                                        date = parseDate("13.09.2024") ?: Date()
                                     ),
                                     PlaceReview(
-                                        reviewId = 5,
+                                        reviewId = 10,
                                         placeId = 5,
                                         userId = 1,
                                         rating = 5,
                                         comment = "Charming café with delicious food.",
-                                        date = parseDate("14.09.2024")?:Date()
+                                        date = parseDate("14.09.2024") ?: Date()
                                     ),
                                     PlaceReview(
-                                        reviewId = 6,
+                                        reviewId = 11,
                                         placeId = 6,
                                         userId = 2,
                                         rating = 5,
                                         comment = "Great rooftop bar with live music.",
-                                        date = parseDate("15.09.2024")?:Date()
+                                        date = parseDate("15.09.2024") ?: Date()
                                     ),
                                     PlaceReview(
-                                        reviewId = 7,
+                                        reviewId = 12,
                                         placeId = 7,
                                         userId = 1,
                                         rating = 4,
                                         comment = "Unique club with artistic focus.",
-                                        date = parseDate("16.09.2024")?:Date()
+                                        date = parseDate("16.09.2024") ?: Date()
                                     ),
                                     PlaceReview(
-                                        reviewId = 8,
+                                        reviewId = 13,
                                         placeId = 8,
                                         userId = 2,
                                         rating = 4,
                                         comment = "Popular spot in Kreuzberg with good drinks.",
-                                        date = parseDate("17.09.2024")?:Date()
+                                        date = parseDate("17.09.2024") ?: Date()
                                     ),
                                     PlaceReview(
-                                        reviewId = 9,
+                                        reviewId = 14,
                                         placeId = 9,
                                         userId = 1,
                                         rating = 5,
                                         comment = "Elegant bar with classic cocktails.",
-                                        date = parseDate("18.09.2024")?:Date()
+                                        date = parseDate("18.09.2024") ?: Date()
                                     ),
                                     PlaceReview(
-                                        reviewId = 10,
+                                        reviewId = 15,
                                         placeId = 10,
                                         userId = 2,
                                         rating = 5,
                                         comment = "Hip coworking space and café, ideal for freelancers.",
-                                        date = parseDate("2021-07-01")?:Date()
-                                    )
+                                        date = parseDate("2021-07-01") ?: Date()
+                                    ),
+                                    PlaceReview(
+                                        reviewId = 16,
+                                        placeId = 1,
+                                        userId = 1,
+                                        rating = 4,
+                                        comment = "Unique club with artistic focus.",
+                                        date = parseDate("05.04.2024") ?: Date()
+                                    ),
                                 )
                             }
                         }
@@ -448,11 +424,3 @@ abstract class AppDatabase : RoomDatabase() {
                 ).build()
     }
 }
-
-//    private fun deleteDatabase(context: Context) {
-//        val dbFile = context.getDatabasePath(DATABASE_NAME)
-//        if (dbFile.exists()) {
-//            dbFile.delete()
-//        }
-//    }
-//

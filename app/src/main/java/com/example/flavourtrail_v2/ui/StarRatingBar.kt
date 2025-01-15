@@ -1,5 +1,6 @@
-package com.example.flavourtrail_v2.ui
+package com.example.flavourtrail_v2.ui.components.review
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -8,6 +9,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,8 +21,10 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun StarRatingBar(
     maxStars: Int = 5,
-    rating: Float
+    initialRating: Float,
+    isChangeable: Boolean = true
 ) {
+    val rating = remember { mutableStateOf(initialRating) }
     val density = LocalDensity.current.density
     val starSize = (12f * density).dp
     val starSpacing = (0.5f * density).dp
@@ -28,9 +33,9 @@ fun StarRatingBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         for (i in 1..maxStars) {
-            val isSelected = i <= rating
+            val isSelected = i <= rating.value
             val icon = if (isSelected) Icons.Filled.Star else Icons.Default.Star
-            val iconTintColor = if (isSelected) Color(0xFFFFC700) else Color(0x20FFFFFF)
+            val iconTintColor = if (isSelected) Color(0xFFFFC700) else Color(0xFF9E9E9E)
             Icon(
                 imageVector = icon,
                 contentDescription = null,
@@ -38,6 +43,7 @@ fun StarRatingBar(
                 modifier = Modifier
                     .width(starSize)
                     .height(starSize)
+                    .then(if (isChangeable) Modifier.clickable { rating.value = i.toFloat() } else Modifier)
             )
 
             if (i < maxStars) {
@@ -46,8 +52,9 @@ fun StarRatingBar(
         }
     }
 }
+
 @Preview
 @Composable
 fun PreviewStarRatingBar() {
-    StarRatingBar(rating = 3.5f)
+    StarRatingBar(initialRating = 3.5f, isChangeable = true)
 }

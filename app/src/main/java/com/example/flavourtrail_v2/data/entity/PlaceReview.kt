@@ -29,7 +29,7 @@ import java.util.Date
 data class PlaceReview (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "review_id")
-    val reviewId: Int,
+    val reviewId: Int = 0,
     @ColumnInfo(name = "place_id") val placeId: Int,
     @ColumnInfo(name = "user_id") val userId: Int,
     @ColumnInfo(name = "rating") val rating: Int,
