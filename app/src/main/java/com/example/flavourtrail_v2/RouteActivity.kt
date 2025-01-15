@@ -1,7 +1,6 @@
 package com.example.flavourtrail_v2
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -27,23 +26,8 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import com.example.flavourtrail_v2.data.AppDatabase
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.ImageBitmap
-import java.io.InputStream
 import androidx.compose.foundation.lazy.itemsIndexed
 
-
-fun loadImageFromAssets(imageName: String, context: Context): ImageBitmap? {
-    return try {
-        val assetManager = context.assets
-        val inputStream: InputStream = assetManager.open(imageName)
-        val imageBitmap = android.graphics.BitmapFactory.decodeStream(inputStream)
-        imageBitmap.asImageBitmap()
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
-    }
-}
 
 class RouteActivity : BaseActivity() {
     @Composable
@@ -214,7 +198,16 @@ fun RouteScreen() {
                 LazyColumn {
                     itemsIndexed(filteredPlaceNames) { index, place ->
                         val placeIndex = placeNames.indexOf(place)
-                        val imageBitmap = loadImageFromAssets("${place.split(" ")[0]}.jpg", context)
+                        val imageFileName = place.replace(" ", "_").lowercase()
+                        val drawableId = context.resources.getIdentifier(imageFileName, "drawable", context.packageName)
+
+                        // Check if the image exists in drawable folder
+                        val imageBitmap = if (drawableId != 0) {
+                            painterResource(id = drawableId)
+                        } else {
+                            null
+                        }
+
                         val placeType = filteredPlaceTypes[placeIndex]
 
                         Row(
@@ -222,10 +215,10 @@ fun RouteScreen() {
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             // Display Image
-                            if (imageBitmap != null) {
+                            imageBitmap?.let {
                                 Image(
-                                    bitmap = imageBitmap,
-                                    contentDescription = "${place.split(" ")[0]} Image",
+                                    painter = it,
+                                    contentDescription = "$place Image",
                                     modifier = Modifier
                                         .size(50.dp)
                                         .clip(RoundedCornerShape(8.dp))
@@ -269,7 +262,6 @@ fun RouteScreen() {
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
-
             } else {
                 Text(text = "No places found for selected route.")
             }
