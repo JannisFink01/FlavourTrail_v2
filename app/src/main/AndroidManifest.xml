@@ -24,6 +24,11 @@
             android:label="@string/title_activity_place_reviews"
             android:theme="@style/Theme.FlavourTrail_v2" />
         <activity
+            android:name=".RouteActivity"
+            android:exported="false"
+            android:label="RouteActivity"
+            android:theme="@style/Theme.FlavourTrail_v2" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
