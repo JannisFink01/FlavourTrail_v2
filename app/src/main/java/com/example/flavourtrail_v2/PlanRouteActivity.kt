@@ -4,6 +4,7 @@ package com.example.flavourtrail_v2
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.location.Geocoder
 import android.os.Looper
 import android.util.Log
@@ -291,11 +292,15 @@ fun PlanRouteScreen(context: Context) {
                     }
 
                     Button(
-                        onClick = { /* Let's Go Button Logic */ },
+                        onClick = {
+                            val intent = Intent(context, RouteActivity::class.java)
+                            context.startActivity(intent)
+                        },
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(text = "Let's Go!")
                     }
+
                 }
 
             }
