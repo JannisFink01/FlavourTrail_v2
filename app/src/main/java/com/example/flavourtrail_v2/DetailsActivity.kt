@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,6 +37,8 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,23 +50,48 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.flavourtrail_v2.data.AppDatabase
+import com.example.flavourtrail_v2.data.ViewModel.PlaceViewModel
+import com.example.flavourtrail_v2.data.ViewModel.PlaceViewModelFactory
+import com.example.flavourtrail_v2.data.entity.Place
+import com.example.flavourtrail_v2.data.repository.PlaceRepository
 import com.example.flavourtrail_v2.ui.theme.FlavourTrail_v2Theme
 import com.example.flavourtrail_v2.ui.TopBar
 
 class DetailsActivity : ComponentActivity() {
+    private val placeViewModel: PlaceViewModel by viewModels{
+        PlaceViewModelFactory(
+            PlaceRepository(
+                AppDatabase.getInstance(application).placeDao()
+            )
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent{
             FlavourTrail_v2Theme {
-                DetailScreen()
+                DetailScreen(
+                    placeId = intent.getIntExtra("PLACE_ID", 1), // Default to 1 if not provided
+                    placeViewModel = placeViewModel
+                )
             }
         }
     }
 }
 
 @Composable
-fun DetailScreen() {
+fun DetailScreen(
+    placeId: Int,
+    placeViewModel: PlaceViewModel,
+    modifier: Modifier = Modifier
+    ) {
+    var place by remember { mutableStateOf<Place?>(null) }
+
+    LaunchedEffect(placeId) {
+        placeViewModel.getPlaceById(placeId)
+    }
     // Create a scrollable state for vertical scrolling
     val scrollState = rememberScrollState() // State to control scrolling
     Scaffold(
@@ -176,7 +204,7 @@ fun InteractionBar(){
 }
 
 @Composable
-fun ImageSection() {
+fun ImageSection(Place: Place? = null) {
     Image(
         painter = painterResource(id = R.drawable.destination_placeholder),
         contentDescription = "Image",

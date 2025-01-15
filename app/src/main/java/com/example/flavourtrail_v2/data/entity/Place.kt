@@ -18,4 +18,6 @@ data class Place (
     @ColumnInfo(name = "longitude") val longitude: Double,
     @ColumnInfo(name = "description") val description: String,
     @ColumnInfo(name="image") val image: String
-)
+) {
+
+}

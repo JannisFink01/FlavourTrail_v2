@@ -3,7 +3,9 @@ package com.example.flavourtrail_v2.data.ViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flavourtrail_v2.data.entity.Place
+import com.example.flavourtrail_v2.data.entity.PlaceReviewWithDetails
 import com.example.flavourtrail_v2.data.repository.PlaceRepository
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class PlaceViewModel(private val repository: PlaceRepository) : ViewModel() {
