@@ -68,6 +68,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.play.services.location)
     implementation(libs.play.services.tasks)
+    implementation(libs.accompanist.flowlayout)
+
 
     // Google Maps
     implementation("com.google.maps.android:maps-compose:2.11.0")
