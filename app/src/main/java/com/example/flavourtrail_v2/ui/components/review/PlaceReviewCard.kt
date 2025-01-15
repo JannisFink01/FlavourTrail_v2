@@ -1,10 +1,6 @@
 package com.example.flavourtrail_v2.ui.components.review
 
-import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,54 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.flavourtrail_v2.R
-import com.example.flavourtrail_v2.data.entity.Place
-import com.example.flavourtrail_v2.data.entity.PlaceReview
 import com.example.flavourtrail_v2.data.entity.PlaceReviewWithDetails
-import com.example.flavourtrail_v2.data.entity.User
 import java.text.SimpleDateFormat
 import java.util.Locale
-
-
-class PlaceReviews : ComponentActivity() {
-    val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-    val mockDate = dateFormat.parse("10.09.2024")
-    val exampleReview = PlaceReviewWithDetails(
-        PlaceReview(1, 1, 1, 5, "Great place!", mockDate), User(
-            1,
-            "Thorsten Schmitz",
-            "thomas.r.marshall@example.com",
-            "password",
-            false,
-            image = "anomalieArt.jpg"
-        ), Place(
-            1,
-            "Example Place",
-            "Example Type",
-            "Example Address",
-            "Example City",
-            "Example Postal Code",
-            0.0,
-            0.0,
-            "Example Description",
-            "anomalieArt.jpg"
-        )
-    )
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            ReviewCard(
-                review = exampleReview
-            )
-        }
-
-    }
-}
-
 
 @Composable
 fun ReviewCard(review: PlaceReviewWithDetails) {
@@ -92,7 +45,6 @@ fun ReviewCard(review: PlaceReviewWithDetails) {
     Card(
         modifier = Modifier
             .padding(8.dp)
-//            .background(MaterialTheme.colorScheme.surface)
 
             .fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
@@ -124,56 +76,19 @@ fun ReviewCard(review: PlaceReviewWithDetails) {
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(8.dp))
-            val dateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
-            val date = dateFormat.parse("2024/09/10")
             Text(
                 text = formattedDate, style = MaterialTheme.typography.bodySmall
             )
             Spacer(modifier = Modifier.height(4.dp))
-            StarRatingBar(maxStars = 5, initialRating = review.placeReview.rating.toFloat(), isChangeable = true)
+            StarRatingBar(
+                maxStars = 5,
+                initialRating = review.placeReview.rating.toFloat(),
+                isChangeable = false
+            )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = review.placeReview.comment, style = MaterialTheme.typography.bodySmall
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun PreviewHeadline() {
-    val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-    val mockDate = dateFormat.parse("10.09.2024")
-    val exampleReview = PlaceReviewWithDetails(
-        PlaceReview(
-            1,
-            1,
-            1,
-            5,
-            "Great place!",
-            mockDate
-        ),
-        User(
-            1,
-            "Thorsten Schmitz",
-            "thomas.r.marshall@example.com",
-            "password",
-            false,
-            image = "anomalieArt.jpg"
-        ), Place(
-            1,
-            "Example Place",
-            "Example Type",
-            "Example Address",
-            "Example City",
-            "Example Postal Code",
-            0.0,
-            0.0,
-            "Example Description",
-            "anomalieArt.jpg"
-        )
-    )
-    ReviewCard(
-        review = exampleReview,
-    )
 }

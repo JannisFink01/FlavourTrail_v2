@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -22,9 +23,13 @@ import androidx.compose.ui.unit.dp
 fun StarRatingBar(
     maxStars: Int = 5,
     initialRating: Float,
-    isChangeable: Boolean = true
+    isChangeable: Boolean = true,
+    onRatingChanged: (Float) -> Unit = {}
 ) {
     val rating = remember { mutableStateOf(initialRating) }
+    LaunchedEffect(initialRating) {
+        rating.value = initialRating
+    }
     val density = LocalDensity.current.density
     val starSize = (12f * density).dp
     val starSpacing = (0.5f * density).dp
@@ -43,7 +48,10 @@ fun StarRatingBar(
                 modifier = Modifier
                     .width(starSize)
                     .height(starSize)
-                    .then(if (isChangeable) Modifier.clickable { rating.value = i.toFloat() } else Modifier)
+                    .then(if (isChangeable) Modifier.clickable {
+                        rating.value = i.toFloat()
+                        onRatingChanged(rating.value)
+                    } else Modifier)
             )
 
             if (i < maxStars) {
