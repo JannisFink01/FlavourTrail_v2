@@ -1,22 +1,32 @@
 package com.example.flavourtrail_v2.ui
 
+import android.content.Intent
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext // Import this
+import com.example.flavourtrail_v2.MainActivity
+import com.example.flavourtrail_v2.PlanRouteActivity
 import com.example.flavourtrail_v2.R
 
 @Composable
 fun CustomNavigationBar(onItemSelected: (String) -> Unit) {
+    val context = LocalContext.current // Get the current context
+
     NavigationBar(
         modifier = Modifier.fillMaxWidth(),
         containerColor = MaterialTheme.colorScheme.primary
     ) {
         NavigationBarItem(
             selected = false,
-            onClick = { onItemSelected("Home") },
+            onClick = {
+                // Navigate to MainActivity
+                val intent = Intent(context, MainActivity::class.java)
+                context.startActivity(intent)
+            },
             icon = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_home),
@@ -34,7 +44,9 @@ fun CustomNavigationBar(onItemSelected: (String) -> Unit) {
 
         NavigationBarItem(
             selected = false,
-            onClick = { onItemSelected("Routes") },
+            onClick = { // Navigate to PlanRouteActivity
+                val intent = Intent(context, PlanRouteActivity::class.java)
+                context.startActivity(intent) },
             icon = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_routes),
