@@ -60,6 +60,7 @@ import com.example.flavourtrail_v2.data.repository.*
 import com.example.flavourtrail_v2.ui.theme.FlavourTrail_v2Theme
 import com.example.flavourtrail_v2.ui.TopBar
 import com.example.flavourtrail_v2.ui.components.ImageSection
+import com.example.flavourtrail_v2.ui.components.review.RatingPopup
 import com.example.flavourtrail_v2.ui.components.review.StarRatingBar
 
 class DetailsActivity : ComponentActivity() {
@@ -149,7 +150,7 @@ fun DetailScreen(
             Row(modifier = Modifier.padding(16.dp)) {
                 TimeInformationSection()
                 Spacer(modifier = Modifier.width(16.dp))
-                RateDestinationButton()
+                RateDestinationButton(placeReviewViewModel, placeId)
             }
             place?.let {
                 DetailSection(place = it)
@@ -220,7 +221,6 @@ fun InteractionBar() {
         )
     }
 }
-
 
 
 @Composable
@@ -320,16 +320,18 @@ fun TimeInformationSection() {
 }
 
 @Composable
-fun RateDestinationButton() {
+fun RateDestinationButton(placeReviewViewModel: PlaceReviewViewModel,placeId: Int) {
+    var showPopup by remember { mutableStateOf(false) }
     Button(
-        onClick = { /* Handle button click */ },
+        onClick = { showPopup = true },
         modifier = Modifier.width(200.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.LightGray,
             contentColor = Color.Black
         ),
         shape = RoundedCornerShape(10.dp)
-    ) {
+    )
+    {
         Icon(
             imageVector = Icons.Filled.Star, // Use a built-in Material Icon
             contentDescription = "Star Icon", // Provide a description for accessibility
@@ -341,6 +343,12 @@ fun RateDestinationButton() {
             text = "Rate Destination",
             fontSize = 20.sp
         )
+        if (showPopup) {
+            RatingPopup(
+                placeReviewViewModel = placeReviewViewModel,
+                placeId = placeId,
+                onDismiss = { showPopup = false })
+        }
     }
 }
 

@@ -23,8 +23,10 @@ import com.example.flavourtrail_v2.data.entity.PlaceReview
 import com.example.flavourtrail_v2.ui.components.review.StarRatingBar
 import java.util.Date
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.ui.graphics.Color
 import com.example.flavourtrail_v2.data.ViewModel.PlaceViewModel
 
 @Composable
@@ -40,17 +42,29 @@ fun RatingPopup(placeReviewViewModel: PlaceReviewViewModel, placeId: Int, onDism
                 fontSize = 20.sp
             )
         },
+        dismissButton = {
+            Button(
+                onClick = onDismiss,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Red,
+                    contentColor = Color.White
+                )
+            ) {
+                Text("Cancel")
+            }
+        },
         text = {
             Column {
                 StarRatingBar(
                     maxStars = 5,
                     initialRating = 0f,
+                    onRatingChanged = { newRating -> rating = newRating }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 TextField(
                     value = text,
                     onValueChange = { newText: String -> text = newText },
-                    label = { Text("Kommentar") },
+                    label = { Text("Comment") },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -67,19 +81,14 @@ fun RatingPopup(placeReviewViewModel: PlaceReviewViewModel, placeId: Int, onDism
                 placeReviewViewModel.insertPlaceReview(placeReview)
                 onDismiss()
             }) {
-                Text("Speichern")
+                Text("save")
             }
         },
-        dismissButton = {
-            IconButton(onClick = onDismiss) {
-                Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
-            }
-        }
     )
 }
 
 @Composable
-fun ShowRatingPopupButton(placeReviewViewModel: PlaceReviewViewModel,placeId: Int) {
+fun ShowRatingPopupButton(placeReviewViewModel: PlaceReviewViewModel, placeId: Int) {
     var showPopup by remember { mutableStateOf(false) }
 
     Button(onClick = { showPopup = true }) {
@@ -87,6 +96,9 @@ fun ShowRatingPopupButton(placeReviewViewModel: PlaceReviewViewModel,placeId: In
     }
 
     if (showPopup) {
-        RatingPopup(placeReviewViewModel = placeReviewViewModel, placeId = placeId, onDismiss = { showPopup = false })
+        RatingPopup(
+            placeReviewViewModel = placeReviewViewModel,
+            placeId = placeId,
+            onDismiss = { showPopup = false })
     }
 }
