@@ -1,6 +1,9 @@
 package com.example.flavourtrail_v2
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -51,6 +54,15 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.rememberCameraPositionState
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
+import com.example.flavourtrail_v2.data.AppDatabase
+import androidx.compose.foundation.lazy.itemsIndexed
+import com.example.flavourtrail_v2.data.dao.RoutePlaceDao
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class RouteActivity : BaseActivity() {
@@ -60,6 +72,7 @@ class RouteActivity : BaseActivity() {
     }
 }
 
+@SuppressLint("DiscouragedApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RouteScreen() {
@@ -256,9 +269,9 @@ fun RouteScreen() {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    // Handle click event for the row
-                                    println("Clicked on $place") // Replace this with your navigation or action logic
+                                    navigateToDetailsActivity(context, routePlaceDao, routeId)
                                 }
+
                         ) {
                             // Display Image
                             imageBitmap?.let {
@@ -314,6 +327,27 @@ fun RouteScreen() {
             }
 
             Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+
+fun navigateToDetailsActivity(
+    context: Context,
+    routePlaceDao: RoutePlaceDao,
+    routeId: Int
+) {
+    CoroutineScope(Dispatchers.IO).launch {
+        // Abfrage der Place IDs basierend auf der aktuellen Route
+        val placeIds = routePlaceDao.getAllRoutePlaces()
+            .filter { it.routeId == routeId }
+            .map { it.placeId }
+
+        // Intent starten auf dem Main-Thread
+        withContext(Dispatchers.Main) {
+            val intent = Intent(context, DetailsActivity::class.java).apply {
+                putIntegerArrayListExtra("PLACE_IDS", ArrayList(placeIds))
+            }
+            context.startActivity(intent)
         }
     }
 }
