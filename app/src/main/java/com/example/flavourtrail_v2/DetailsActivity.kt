@@ -80,35 +80,42 @@ fun DetailScreen() {
         }
     )
     { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(scrollState) // Enable scrolling
-        ) {
-            InteractionBar()
-            ImageSection()
-            TitleSection(modifier = Modifier.padding(16.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+//        Column(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(innerPadding)
+//                .padding(horizontal = 0.dp)
+//        ){
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .verticalScroll(scrollState) // Enable scrolling
             ) {
-                StarRatingSection()
-                PriceInformationSection()
+                InteractionBar()
+                ImageSection()
+                TitleSection(modifier = Modifier.padding(16.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    StarRatingSection()
+                    PriceInformationSection()
                 }
-            Box(
-                Modifier.align(Alignment.Start)
-            ) {
-                ViewReviewsButton()
+                Box(
+                    Modifier.align(Alignment.Start)
+                ) {
+                    ViewReviewsButton()
+                }
+                BookNowButton("Book Now")
+                Row(modifier = Modifier.padding(16.dp)) {
+                    TimeInformationSection()
+                    Spacer(modifier = Modifier.width(16.dp))
+                    RateDestinationButton()
+                }
+                DetailSection()
             }
-            BookNowButton("Book Now")
-            Row(modifier = Modifier.padding(16.dp)) {
-                TimeInformationSection()
-                Spacer(modifier=Modifier.width(16.dp))
-                RateDestinationButton()
-            }
-            DetailSection()
-        }
+        //}
     }
 }
 
@@ -118,35 +125,29 @@ fun BottomNavigationBar() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.Absolute.Center
     ) {
-        Row(modifier = Modifier.weight(1f)) {
+        Row() {
+            val stopCounter = 1
             Icon(
                 imageVector = Icons.Filled.KeyboardArrowLeft, // Use a built-in Material Icon
                 contentDescription = "Stop Count", // Provide a description for accessibility
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable { /* Handle click */ }
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text= "1/5")
+            Text(text= "$stopCounter/5")
             Spacer(modifier = Modifier.width(8.dp))
             Icon(
                 imageVector = Icons.Filled.KeyboardArrowRight, // Use a built-in Material Icon
                 contentDescription = "Stop Count", // Provide a description for accessibility
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable { /* Handle click */ }
             )
         }
-        Icon(
-            painter = painterResource(id = R.drawable.map_icon), // Use a built-in Material Icon
-            contentDescription = "Map Icon", // Provide a description for accessibility
-            modifier = Modifier
-                .size(24.dp)
-                .weight(1f)
-        )
-        Icon(
-            imageVector = Icons.Filled.LocationOn, // Use a built-in Material Icon ,
-            contentDescription = "Distance",
-            modifier = Modifier.weight(1f)
-        )
     }
 }
 
@@ -160,7 +161,9 @@ fun InteractionBar(){
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowBack, // Use a built-in Material Icon
             contentDescription = "ArrowBack Icon",
-            modifier = Modifier.size(48.dp) // Optional: Size of the icon
+            modifier = Modifier
+                .size(48.dp) // Optional: Size of the icon
+                .clickable { /* Handle click */ }
         )
         Spacer(modifier = Modifier.weight(1f))
         Icon(

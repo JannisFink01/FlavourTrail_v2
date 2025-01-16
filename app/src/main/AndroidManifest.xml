@@ -30,7 +30,7 @@
             android:theme="@style/Theme.FlavourTrail_v2" />
         <activity
             android:name=".DetailsActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="DetailsActivity"
             android:theme="@style/Theme.FlavourTrail_v2" />
         <activity
