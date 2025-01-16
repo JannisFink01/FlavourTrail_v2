@@ -1,6 +1,7 @@
 package com.example.flavourtrail_v2
 
 import android.content.Intent
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -111,20 +113,23 @@ fun DetailScreen(
 
     // Create a scrollable state for vertical scrolling
     val scrollState = rememberScrollState() // State to control scrolling
-    Scaffold(
-        topBar = {
+    FlavourTrail_v2Theme {
+        Scaffold(
+            topBar = {
             TopBar(
                 userName = "Max Mustermann", // Beispiel-Benutzername
                 profileImageRes = R.drawable.profile_user
             )
         },
-        bottomBar = {
-            NavigationBar {
-                BottomNavigationBar()
+            bottomBar = {
+            FlavourTrail_v2Theme {
+                NavigationBar{
+                    BottomNavigationBar()
+                }
             }
-        }
-    )
-    { innerPadding ->
+            }
+        )
+        { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -132,30 +137,45 @@ fun DetailScreen(
                 .verticalScroll(scrollState) // Enable scrolling
         ) {
             InteractionBar()
-            place?.let { ImageSection(place = it) }
-            TitleSection(place = place, modifier = Modifier.padding(16.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                StarRatingSection(averageRating = averageRating)
-                PriceInformationSection()
-            }
-            Box(
-                Modifier.align(Alignment.Start)
-            ) {
-                ViewReviewsButton(placeId = placeId)
-            }
-            BookNowButton("Book Now")
-            Row(modifier = Modifier.padding(16.dp)) {
-                TimeInformationSection()
-                Spacer(modifier = Modifier.width(16.dp))
-                RateDestinationButton(placeReviewViewModel, placeId)
-            }
-            place?.let {
-                DetailSection(place = it)
+            LazyColumn {
+                item{
+                    place?.let { ImageSection(place = it) }
+                }
+                item{
+                    TitleSection(place = place, modifier = Modifier.padding(16.dp))
+                }
+                item{
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        StarRatingSection(averageRating = averageRating)
+                        PriceInformationSection()
+                    }
+                }
+                item{
+                    Box(
+                        Modifier.align(Alignment.Start)
+                    ) {
+                        ViewReviewsButton(placeId = placeId)
+                    }
+                }
+                item{
+                    BookNowButton("Book Now")
+                }
+                item{
+                    Row(modifier = Modifier.padding(16.dp)) {
+                        TimeInformationSection()
+                        Spacer(modifier = Modifier.width(16.dp))
+                        RateDestinationButton(placeReviewViewModel, placeId)
+                    }
+                }
+                item{
+                    place?.let {
+                        DetailSection(place = it)                }
             }
         }
+    }
     }
 }
 
@@ -165,41 +185,37 @@ fun BottomNavigationBar() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            //.background(Color.Blue)
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.Absolute.Center
     ) {
-        Row(modifier = Modifier.weight(1f)) {
+        Row() {
+            val stopCounter = 1
             Icon(
                 imageVector = Icons.Filled.KeyboardArrowLeft, // Use a built-in Material Icon
                 contentDescription = "Stop Count", // Provide a description for accessibility
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable { /* Handle click */ }
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = "1/5")
+            Text(text= "$stopCounter/5")
             Spacer(modifier = Modifier.width(8.dp))
             Icon(
                 imageVector = Icons.Filled.KeyboardArrowRight, // Use a built-in Material Icon
                 contentDescription = "Stop Count", // Provide a description for accessibility
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable { /* Handle click */ }
             )
         }
-        Icon(
-            painter = painterResource(id = R.drawable.map_icon), // Use a built-in Material Icon
-            contentDescription = "Map Icon", // Provide a description for accessibility
-            modifier = Modifier
-                .size(24.dp)
-                .weight(1f)
-        )
-        Icon(
-            imageVector = Icons.Filled.LocationOn, // Use a built-in Material Icon ,
-            contentDescription = "Distance",
-            modifier = Modifier.weight(1f)
-        )
     }
 }
 
 //Definitionen der einzelnen Composables
 @Composable
-fun InteractionBar() {
+fun InteractionBar(){
+    val context = LocalContext.current
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End
@@ -207,7 +223,13 @@ fun InteractionBar() {
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowBack, // Use a built-in Material Icon
             contentDescription = "ArrowBack Icon",
-            modifier = Modifier.size(48.dp) // Optional: Size of the icon
+            modifier = Modifier
+                .size(48.dp) // Optional: Size of the icon
+                .clickable {
+                    // Handle the back navigation
+                    val activity = (context as? Activity)
+                    activity?.finish()
+                }
         )
         Spacer(modifier = Modifier.weight(1f))
         Icon(
