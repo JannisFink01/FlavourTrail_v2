@@ -100,7 +100,7 @@ fun DetailScreen(
         Scaffold(
             topBar = {
                 TopBar(
-                    userName = "Max Mustermann", // Beispiel-Benutzername
+                    userName = "John Doe", // Beispiel-Benutzername
                     profileImageRes = R.drawable.profile_user
                 )
             },
