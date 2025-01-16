@@ -34,6 +34,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
+import com.google.accompanist.flowlayout.FlowRow
+
 
 
 class PlanRouteActivity : BaseActivity() {
@@ -219,11 +221,12 @@ fun PlanRouteScreen(context: Context) {
 
                 // Dritter Bereich: Präferenzen wählen
                 if (selectedTags.isNotEmpty()) {
-                    Row(
+                    FlowRow(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        mainAxisSpacing = 8.dp,
+                        crossAxisSpacing = 8.dp
                     ) {
                         selectedTags.forEach { tag ->
                             Chip(tagName = tag, onRemove = { selectedTags.remove(tag) })
@@ -294,6 +297,7 @@ fun PlanRouteScreen(context: Context) {
                     Button(
                         onClick = {
                             val intent = Intent(context, RouteActivity::class.java)
+                            intent.putExtra("numberOfStops", numberOfStops.value.toIntOrNull() ?: 0)
                             context.startActivity(intent)
                         },
                         modifier = Modifier.weight(1f)

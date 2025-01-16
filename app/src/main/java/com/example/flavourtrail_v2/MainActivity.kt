@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -218,6 +219,7 @@ fun MapSection(title: String) {
 
 @Composable
 fun FavoritesSection(routes: List<Route>) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -225,7 +227,6 @@ fun FavoritesSection(routes: List<Route>) {
             .background(Color.LightGray)
             .padding(16.dp)
     ) {
-        // Text "Favorites" und Icon in einer Reihe
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -246,9 +247,8 @@ fun FavoritesSection(routes: List<Route>) {
         }
 
         if (routes.isEmpty()) {
-            // Zeige eine Nachricht an, wenn keine Routen vorhanden sind
             Text(
-                text = "Keine Favoriten verfügbar",
+                text = "No Favorites available",
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.Gray
             )
@@ -263,10 +263,16 @@ fun FavoritesSection(routes: List<Route>) {
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(8.dp))
                             .background(Color.White)
+                            .clickable {
+                                // Übergebe die route_id der angeklickten Route an RouteActivity
+                                val intent = Intent(context, RouteActivity::class.java).apply {
+                                    putExtra("ROUTE_ID", route.route_id)
+                                }
+                                context.startActivity(intent)
+                            }
                             .padding(16.dp)
                     ) {
                         Column {
-                            // Row für route.name und das Share-Icon
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -281,7 +287,7 @@ fun FavoritesSection(routes: List<Route>) {
                                     painter = painterResource(id = R.drawable.ic_share),
                                     contentDescription = "Share Icon",
                                     modifier = Modifier.size(20.dp),
-                                    tint = Color.Unspecified // Behalte die Originalfarbe des Icons
+                                    tint = Color.Unspecified
                                 )
                             }
                             Spacer(modifier = Modifier.height(8.dp))
