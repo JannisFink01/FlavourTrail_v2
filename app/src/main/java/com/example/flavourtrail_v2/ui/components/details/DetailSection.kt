@@ -12,10 +12,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.flavourtrail_v2.data.entity.Place
 
+/**
+ * A composable function that displays detailed information about a specific place.
+ *
+ * This detail section shows the description of a given place in a full-screen box with a light gray background.
+ * It provides a clean layout for presenting textual content with proper padding and styling.
+ *
+ * @param place The `Place` object containing details to display.
+ */
 @Composable
 fun DetailSection(place: Place) {
-
-
     // Box to hold the content with a background color
     Box(
         modifier = Modifier
@@ -24,8 +30,8 @@ fun DetailSection(place: Place) {
     ) {
         // Text content inside the Box
         Text(
-            text = place.description,
-            fontSize = 20.sp,
+            text = place.description, // Description of the place
+            fontSize = 20.sp, // Text size
             modifier = Modifier.padding(16.dp) // Padding around the text
         )
     }

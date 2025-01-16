@@ -16,30 +16,46 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
+/**
+ * A composable function for displaying an interaction bar with navigation, sharing, and a favorite toggle option.
+ *
+ * The interaction bar contains:
+ * - A back arrow icon to navigate to the previous screen.
+ * - A share icon for sharing content.
+ * - A toggleable heart icon for marking items as favorites.
+ */
 @Composable
 fun InteractionBar() {
-    val context = LocalContext.current
+    val context = LocalContext.current // Retrieve the current context
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End
     ) {
+        // Back arrow icon
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack, // Use a built-in Material Icon
-            contentDescription = "ArrowBack Icon",
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack, // Back navigation icon
+            contentDescription = "Back Icon", // Accessibility description
             modifier = Modifier
-                .size(48.dp) // Optional: Size of the icon
+                .size(48.dp) // Size of the back icon
                 .clickable {
-                    // Handle the back navigation
+                    // Finish the current activity to navigate back
                     val activity = (context as? Activity)
                     activity?.finish()
                 }
         )
+
+        // Spacer to align elements properly
         Spacer(modifier = Modifier.weight(1f))
+
+        // Share icon
         Icon(
-            imageVector = Icons.Filled.Share, // Use a built-in Material Icon
-            contentDescription = "Share Icon",
-            modifier = Modifier.size(48.dp) // Optional: Size of the icon
+            imageVector = Icons.Filled.Share, // Share icon
+            contentDescription = "Share Icon", // Accessibility description
+            modifier = Modifier.size(48.dp) // Size of the share icon
         )
+
+        // Heart toggle icon for marking as favorite
         HeartToggleIcon(
             iconSize = 48.dp,
             contentDescription = "Toggle Heart Icon"

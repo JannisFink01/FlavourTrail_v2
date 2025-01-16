@@ -23,10 +23,24 @@ import com.example.flavourtrail_v2.PlaceReviewViewModel
 import com.example.flavourtrail_v2.data.entity.PlaceReview
 import java.util.Date
 
+/**
+ * Composable function that displays a popup dialog for submitting a rating and comment for a place.
+ *
+ * The dialog includes:
+ * - A star rating bar for selecting a rating.
+ * - A text field for entering a comment.
+ * - A confirm button to save the review.
+ * - A cancel button to dismiss the dialog without saving.
+ *
+ * @param placeReviewViewModel The [PlaceReviewViewModel] instance used to save the review.
+ * @param placeId The ID of the place being reviewed.
+ * @param onDismiss Callback invoked when the dialog is dismissed.
+ */
 @Composable
 fun RatingPopup(placeReviewViewModel: PlaceReviewViewModel, placeId: Int, onDismiss: () -> Unit) {
     var text by remember { mutableStateOf("") }
     var rating by remember { mutableStateOf(0f) }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -49,12 +63,14 @@ fun RatingPopup(placeReviewViewModel: PlaceReviewViewModel, placeId: Int, onDism
         },
         text = {
             Column {
+                // Star rating bar for selecting a rating
                 StarRatingBar(
                     maxStars = 5,
                     initialRating = 0f,
                     onRatingChanged = { newRating -> rating = newRating }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
+                // Text field for entering a comment
                 TextField(
                     value = text,
                     onValueChange = { newText: String -> text = newText },
@@ -65,17 +81,18 @@ fun RatingPopup(placeReviewViewModel: PlaceReviewViewModel, placeId: Int, onDism
         },
         confirmButton = {
             Button(onClick = {
+                // Create and insert the new review
                 val placeReview = PlaceReview(
-                    placeId = placeId, // TODO Beispielwert
-                    userId = 1, // TODO Beispielwert
+                    placeId = placeId, // ID of the place being reviewed
+                    userId = 1, // Example user ID (replace with real data)
                     rating = rating.toInt(),
                     comment = text,
-                    date = Date() // aktuelles Datum
+                    date = Date() // Current date
                 )
                 placeReviewViewModel.insertPlaceReview(placeReview)
-                onDismiss()
+                onDismiss() // Dismiss the dialog
             }) {
-                Text("save")
+                Text("Save")
             }
         },
     )
