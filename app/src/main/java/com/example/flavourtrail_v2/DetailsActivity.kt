@@ -71,8 +71,10 @@ class DetailsActivity : ComponentActivity() {
         setContent {
             FlavourTrail_v2Theme {
                 val placeIds = intent.getIntegerArrayListExtra("PLACE_IDS") ?: arrayListOf(1,2,3) // Default to list with 2 if not provided
+                val clickedIndex = intent.getIntExtra("CLICKED_INDEX", 0) // Default to 0 if not provided
                 DetailScreen(
                     placeIds = placeIds, // Default to 1 if not provided
+                    clickedIndex = clickedIndex,
                     placeViewModel = placeViewModel,
                     placeReviewViewModel = placeReviewViewModel
                 )
@@ -84,12 +86,13 @@ class DetailsActivity : ComponentActivity() {
 @Composable
 fun DetailScreen(
     placeIds: List<Int>,
+    clickedIndex: Int,
     placeViewModel: PlaceViewModel,
     placeReviewViewModel: PlaceReviewViewModel,
     modifier: Modifier = Modifier
 ) {
     var place by remember { mutableStateOf<Place?>(null) }
-    var placeId by remember { mutableStateOf(placeIds.first()) }
+    var placeId by remember { mutableStateOf(placeIds.get(clickedIndex)) }
     val placeWithDetails by placeReviewViewModel.reviews.collectAsState()
     LaunchedEffect(placeId) {
         place = placeViewModel.getPlaceById(placeId)
@@ -110,6 +113,7 @@ fun DetailScreen(
                 FlavourTrail_v2Theme {
                     NavigationBar {
                         BottomNavigationBar(
+                            index = clickedIndex,
                             items= placeIds.map { it.toString() },
                             onItemSelected = {selectedPlaceId -> placeId = selectedPlaceId.toInt() }
                         )

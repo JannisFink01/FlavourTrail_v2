@@ -54,8 +54,6 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.rememberCameraPositionState
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.foundation.lazy.itemsIndexed
 import com.example.flavourtrail_v2.data.dao.RoutePlaceDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

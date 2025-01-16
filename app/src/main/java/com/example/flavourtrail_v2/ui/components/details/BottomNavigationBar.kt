@@ -13,15 +13,16 @@ import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun BottomNavigationBar(items: List<String>, onItemSelected: (String) -> Unit) {
-    val currentIndex = remember { mutableStateOf(0) }
-
+fun BottomNavigationBar(index: Int,items: List<String>, onItemSelected: (String) -> Unit) {
+    var index by remember { mutableIntStateOf(index) }
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -35,16 +36,16 @@ fun BottomNavigationBar(items: List<String>, onItemSelected: (String) -> Unit) {
                 modifier = Modifier
                     .size(24.dp)
                     .clickable {
-                        if (currentIndex.value > 0) {
-                            currentIndex.value--
+                        if (index > 0) {
+                            index --
                         } else {
-                            currentIndex.value = items.size - 1
+                            index = items.size - 1
                         }
-                        onItemSelected(items[currentIndex.value])
+                        onItemSelected(items[index])
                     }
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = "${currentIndex.value +1}/${items.size}")
+            Text(text = "${index +1}/${items.size}")
             Spacer(modifier = Modifier.width(8.dp))
             Icon(
                 imageVector = Icons.Filled.KeyboardArrowRight, // Use a built-in Material Icon
@@ -52,12 +53,12 @@ fun BottomNavigationBar(items: List<String>, onItemSelected: (String) -> Unit) {
                 modifier = Modifier
                     .size(24.dp)
                     .clickable {
-                        if (currentIndex.value < items.size - 1) {
-                            currentIndex.value++
+                        if (index < items.size - 1) {
+                            index++
                         } else {
-                            currentIndex.value = 0
+                            index = 0
                         }
-                        onItemSelected(items[currentIndex.value])
+                        onItemSelected(items[index])
                     }
             )
         }
