@@ -37,6 +37,7 @@ class RouteActivity : BaseActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RouteScreen() {
     val context = LocalContext.current
@@ -121,6 +122,9 @@ fun RouteScreen() {
     }
 
     Scaffold(
+        topBar = {
+            TopAppBar(title = { Text(routeName) })
+        },
         bottomBar = {
             ButtonBar(
                 onSaveClick = { /* Handle Save Click */ },
