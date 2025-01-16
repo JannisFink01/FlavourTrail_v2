@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -24,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -45,7 +45,6 @@ import com.example.flavourtrail_v2.ui.components.details.BottomNavigationBar
 import com.example.flavourtrail_v2.ui.components.details.DetailSection
 import com.example.flavourtrail_v2.ui.components.details.InteractionBar
 import com.example.flavourtrail_v2.ui.components.details.RateDestinationButton
-import com.example.flavourtrail_v2.ui.components.details.TimeInformationSection
 import com.example.flavourtrail_v2.ui.components.details.ViewReviewsButton
 import com.example.flavourtrail_v2.ui.components.review.StarRatingBar
 import com.example.flavourtrail_v2.ui.theme.FlavourTrail_v2Theme
@@ -96,7 +95,7 @@ class DetailsActivity : ComponentActivity() {
 /**
  * Composable function to display the details of a place.
  *
- * @param placeId The ID of the place to display.
+ * @param placeIds The ID of the place to display.
  * @param placeViewModel The ViewModel for fetching place data.
  * @param placeReviewViewModel The ViewModel for fetching reviews of the place.
  */
@@ -108,7 +107,7 @@ fun DetailScreen(
     placeReviewViewModel: PlaceReviewViewModel,
 ) {
     var place by remember { mutableStateOf<Place?>(null) }
-    var placeId by remember { mutableStateOf(placeIds.get(clickedIndex)) }
+    var placeId by remember { mutableIntStateOf(placeIds[clickedIndex]) }
     val placeWithDetails by placeReviewViewModel.reviews.collectAsState()
     LaunchedEffect(placeId) {
         place = placeViewModel.getPlaceById(placeId)
@@ -170,7 +169,6 @@ fun DetailScreen(
                     }
                     item {
                         Row(modifier = Modifier.padding(16.dp)) {
-                            TimeInformationSection()
                             Spacer(modifier = Modifier.width(16.dp))
                             RateDestinationButton(placeReviewViewModel, placeId)
                         }
@@ -193,7 +191,7 @@ fun DetailScreen(
  * @param modifier Optional [Modifier] for this composable.
  */
 @Composable
-fun TitleSection(place: Place? = null, modifier: Modifier = Modifier) {
+fun TitleSection(modifier: Modifier = Modifier, place: Place? = null) {
     Text(
         text = place?.name ?: "Placeholder",
         fontSize = 24.sp,
@@ -205,10 +203,9 @@ fun TitleSection(place: Place? = null, modifier: Modifier = Modifier) {
  * Composable function to display the star rating section.
  *
  * @param averageRating The average rating of the place.
- * @param modifier Optional [Modifier] for this composable.
  */
 @Composable
-fun StarRatingSection(averageRating: Float, modifier: Modifier = Modifier) {
+fun StarRatingSection(averageRating: Float) {
     StarRatingBar(5, averageRating, false)
 }
 
