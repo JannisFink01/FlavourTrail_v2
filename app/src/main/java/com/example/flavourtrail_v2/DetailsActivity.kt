@@ -1,15 +1,10 @@
 package com.example.flavourtrail_v2
 
-import android.content.Intent
-import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,47 +14,29 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.flavourtrail_v2.data.AppDatabase
-import com.example.flavourtrail_v2.data.ViewModel.*
-import com.example.flavourtrail_v2.data.entity.*
-import com.example.flavourtrail_v2.data.repository.*
-import com.example.flavourtrail_v2.ui.theme.FlavourTrail_v2Theme
+import com.example.flavourtrail_v2.data.ViewModel.PlaceViewModel
+import com.example.flavourtrail_v2.data.ViewModel.PlaceViewModelFactory
+import com.example.flavourtrail_v2.data.ViewModel.ReviewViewModelFactory
+import com.example.flavourtrail_v2.data.entity.Place
+import com.example.flavourtrail_v2.data.repository.PlaceRepository
+import com.example.flavourtrail_v2.data.repository.PlaceReviewRepository
 import com.example.flavourtrail_v2.ui.TopBar
 import com.example.flavourtrail_v2.ui.components.ImageSection
 import com.example.flavourtrail_v2.ui.components.details.BookNowButton
@@ -69,8 +46,8 @@ import com.example.flavourtrail_v2.ui.components.details.InteractionBar
 import com.example.flavourtrail_v2.ui.components.details.RateDestinationButton
 import com.example.flavourtrail_v2.ui.components.details.TimeInformationSection
 import com.example.flavourtrail_v2.ui.components.details.ViewReviewsButton
-import com.example.flavourtrail_v2.ui.components.review.RatingPopup
 import com.example.flavourtrail_v2.ui.components.review.StarRatingBar
+import com.example.flavourtrail_v2.ui.theme.FlavourTrail_v2Theme
 
 class DetailsActivity : ComponentActivity() {
     private val placeViewModel: PlaceViewModel by viewModels {
@@ -93,8 +70,9 @@ class DetailsActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FlavourTrail_v2Theme {
+                val placeIds = intent.getIntegerArrayListExtra("PLACE_IDS") ?: arrayListOf(1,2,3) // Default to list with 2 if not provided
                 DetailScreen(
-                    placeId = intent.getIntExtra("PLACE_ID", 2), // Default to 1 if not provided
+                    placeIds = placeIds, // Default to 1 if not provided
                     placeViewModel = placeViewModel,
                     placeReviewViewModel = placeReviewViewModel
                 )
@@ -105,13 +83,14 @@ class DetailsActivity : ComponentActivity() {
 
 @Composable
 fun DetailScreen(
-    placeId: Int,
+    placeIds: List<Int>,
     placeViewModel: PlaceViewModel,
     placeReviewViewModel: PlaceReviewViewModel,
     modifier: Modifier = Modifier
 ) {
-    val placeWithDetails by placeReviewViewModel.reviews.collectAsState()
     var place by remember { mutableStateOf<Place?>(null) }
+    var placeId by remember { mutableStateOf(placeIds.first()) }
+    val placeWithDetails by placeReviewViewModel.reviews.collectAsState()
     LaunchedEffect(placeId) {
         place = placeViewModel.getPlaceById(placeId)
         placeReviewViewModel.getReviewsWithDetailsByPlaceId(placeId)
@@ -119,7 +98,6 @@ fun DetailScreen(
     val averageRating = placeWithDetails.map { it.placeReview.rating }.average().toFloat()
 
     // Create a scrollable state for vertical scrolling
-    val scrollState = rememberScrollState() // State to control scrolling
     FlavourTrail_v2Theme {
         Scaffold(
             topBar = {
@@ -131,7 +109,10 @@ fun DetailScreen(
             bottomBar = {
                 FlavourTrail_v2Theme {
                     NavigationBar {
-                        BottomNavigationBar()
+                        BottomNavigationBar(
+                            items= placeIds.map { it.toString() },
+                            onItemSelected = {selectedPlaceId -> placeId = selectedPlaceId.toInt() }
+                        )
                     }
                 }
             }

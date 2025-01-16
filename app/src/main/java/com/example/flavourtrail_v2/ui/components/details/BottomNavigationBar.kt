@@ -13,11 +13,15 @@ import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun BottomNavigationBar() {
+fun BottomNavigationBar(items: List<String>, onItemSelected: (String) -> Unit) {
+    val currentIndex = remember { mutableStateOf(0) }
+
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -30,7 +34,12 @@ fun BottomNavigationBar() {
                 contentDescription = "Stop Count", // Provide a description for accessibility
                 modifier = Modifier
                     .size(24.dp)
-                    .clickable { /* Handle click */ }
+                    .clickable {
+                        if (currentIndex.value > 0) {
+                            currentIndex.value--
+                            onItemSelected(items[currentIndex.value])
+                        }
+                    }
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(text = "$stopCounter/5")
@@ -40,7 +49,12 @@ fun BottomNavigationBar() {
                 contentDescription = "Stop Count", // Provide a description for accessibility
                 modifier = Modifier
                     .size(24.dp)
-                    .clickable { /* Handle click */ }
+                    .clickable {
+                        if (currentIndex.value < items.size - 1) {
+                            currentIndex.value++
+                            onItemSelected(items[currentIndex.value])
+                        }
+                    }
             )
         }
     }

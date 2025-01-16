@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.flavourtrail_v2.ui.TopBar
 import com.example.flavourtrail_v2.ui.CustomNavigationBar
+import com.example.flavourtrail_v2.ui.TopBar
 import com.example.flavourtrail_v2.ui.theme.FlavourTrail_v2Theme
 
 abstract class BaseActivity : ComponentActivity() {

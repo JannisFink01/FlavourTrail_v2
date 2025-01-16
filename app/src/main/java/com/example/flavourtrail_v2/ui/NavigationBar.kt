@@ -1,13 +1,17 @@
 package com.example.flavourtrail_v2.ui
 
 import android.content.Intent
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext // Import this
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import com.example.flavourtrail_v2.MainActivity
 import com.example.flavourtrail_v2.PlanRouteActivity
 import com.example.flavourtrail_v2.R
