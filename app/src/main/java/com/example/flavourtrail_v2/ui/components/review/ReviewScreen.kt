@@ -1,4 +1,3 @@
-// ReviewScreen.kt
 package com.example.flavourtrail_v2.ui.components.review
 
 import androidx.compose.foundation.layout.Box
@@ -25,6 +24,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.flavourtrail_v2.PlaceReviewViewModel
 
+/**
+ * Enum class representing sorting options for reviews.
+ */
 enum class SortOption {
     DATE_ASCENDING,
     DATE_DESCENDING,
@@ -32,28 +34,47 @@ enum class SortOption {
     RATING_DESCENDING
 }
 
+/**
+ * Composable function that displays a screen for viewing and sorting reviews for a specific place.
+ *
+ * The screen includes:
+ * - A header with the title "Reviews".
+ * - A dropdown menu to sort reviews by date (ascending/descending) or rating (ascending/descending).
+ * - A list of reviews displayed in a scrollable column, sorted based on the selected sort option.
+ *
+ * @param placeId The ID of the place for which reviews are displayed.
+ * @param reviewViewModel The [PlaceReviewViewModel] instance used to fetch and manage review data.
+ * @param modifier A [Modifier] to be applied to the LazyColumn container.
+ */
 @Composable
 fun ReviewScreen(
     placeId: Int,
     reviewViewModel: PlaceReviewViewModel,
     modifier: Modifier = Modifier
 ) {
+    // Collect the list of reviews from the ViewModel as a state
     val reviews by reviewViewModel.reviews.collectAsState()
 
+    // Fetch reviews for the specified place ID when the composable is launched
     LaunchedEffect(placeId) {
         reviewViewModel.getReviewsByPlaceId(placeId)
     }
 
+    // State variables for sorting and dropdown menu visibility
     var selectedSortOption by remember { mutableStateOf(SortOption.DATE_DESCENDING) }
     var expandedSort by remember { mutableStateOf(false) }
 
+    // LazyColumn to display reviews
     LazyColumn(modifier = modifier.padding(16.dp)) {
         item {
+            // Header
             Text(
                 text = "Reviews",
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(8.dp))
+
+            // Sorting dropdown menu
             Box(modifier = Modifier.fillMaxWidth()) {
                 TextButton(onClick = { expandedSort = true }) {
                     Text("Sort by")
@@ -99,6 +120,7 @@ fun ReviewScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            // Sort reviews based on the selected sort option
             val sortedReviews = when (selectedSortOption) {
                 SortOption.DATE_ASCENDING -> reviews.sortedBy { it.placeReview.date }
                 SortOption.DATE_DESCENDING -> reviews.sortedByDescending { it.placeReview.date }
@@ -106,6 +128,7 @@ fun ReviewScreen(
                 SortOption.RATING_DESCENDING -> reviews.sortedByDescending { it.placeReview.rating }
             }
 
+            // Display each review as a ReviewCard
             sortedReviews.forEach { review ->
                 ReviewCard(review = review)
                 Spacer(modifier = Modifier.height(8.dp))

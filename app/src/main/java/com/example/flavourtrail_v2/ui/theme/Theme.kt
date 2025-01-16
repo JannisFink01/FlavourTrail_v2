@@ -10,45 +10,51 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
+/**
+ * Predefined dark color scheme for the app's theme.
+ */
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
     tertiary = Pink80
 )
 
+/**
+ * Predefined light color scheme for the app's theme.
+ */
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
     tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
 )
 
+/**
+ * Composable function to apply the app's theme, dynamically switching between
+ * dark and light themes based on system settings or parameters.
+ *
+ * @param darkTheme Boolean flag to enforce dark theme. Defaults to the system setting.
+ * @param dynamicColor Boolean flag to enable dynamic colors (available on Android 12+).
+ * @param content The content to apply the theme to.
+ */
 @Composable
 fun FlavourTrail_v2Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
+        // Use dynamic color schemes on Android 12+ if enabled
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
+        // Fallback to predefined dark or light color schemes
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
 
+    // Apply the Material 3 theme with the selected color scheme and typography
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
