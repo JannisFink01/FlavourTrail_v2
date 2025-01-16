@@ -141,6 +141,14 @@ abstract class AppDatabase : RoomDatabase() {
                                         "password789",
                                         false,
                                         "guy_in_bar"
+                                    ),
+                                    User(
+                                        3,
+                                        "John Doe",
+                                        "john-doe@example.com",
+                                        "password123",
+                                        false,
+                                        "profile_user"
                                     )
                                 )
 

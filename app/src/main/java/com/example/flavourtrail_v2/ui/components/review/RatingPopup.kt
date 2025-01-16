@@ -84,7 +84,7 @@ fun RatingPopup(placeReviewViewModel: PlaceReviewViewModel, placeId: Int, onDism
                 // Create and insert the new review
                 val placeReview = PlaceReview(
                     placeId = placeId, // ID of the place being reviewed
-                    userId = 1, // Example user ID (replace with real data)
+                    userId = 3, // Example user ID (replace with real data)
                     rating = rating.toInt(),
                     comment = text,
                     date = Date() // Current date

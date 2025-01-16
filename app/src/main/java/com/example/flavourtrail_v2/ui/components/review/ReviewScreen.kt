@@ -153,7 +153,7 @@ fun ReviewScreen(
             SortOption.RATING_DESCENDING -> reviews.sortedByDescending { it.placeReview.rating }
         }
 
-        LazyColumn {
+        LazyColumn(modifier = Modifier.fillMaxWidth().weight(1f))  {
             items(sortedReviews.size) { index ->
                 ReviewCard(review = sortedReviews[index])
                 Spacer(modifier = Modifier.height(8.dp))
