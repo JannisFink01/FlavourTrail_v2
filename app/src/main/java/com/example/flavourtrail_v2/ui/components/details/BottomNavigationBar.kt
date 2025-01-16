@@ -37,12 +37,14 @@ fun BottomNavigationBar(items: List<String>, onItemSelected: (String) -> Unit) {
                     .clickable {
                         if (currentIndex.value > 0) {
                             currentIndex.value--
-                            onItemSelected(items[currentIndex.value])
+                        } else {
+                            currentIndex.value = items.size - 1
                         }
+                        onItemSelected(items[currentIndex.value])
                     }
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = "$stopCounter/5")
+            Text(text = "${currentIndex.value +1}/${items.size}")
             Spacer(modifier = Modifier.width(8.dp))
             Icon(
                 imageVector = Icons.Filled.KeyboardArrowRight, // Use a built-in Material Icon
@@ -52,8 +54,10 @@ fun BottomNavigationBar(items: List<String>, onItemSelected: (String) -> Unit) {
                     .clickable {
                         if (currentIndex.value < items.size - 1) {
                             currentIndex.value++
-                            onItemSelected(items[currentIndex.value])
+                        } else {
+                            currentIndex.value = 0
                         }
+                        onItemSelected(items[currentIndex.value])
                     }
             )
         }

@@ -133,7 +133,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         52.540120,
                                         13.413460,
                                         "Berlins ältester Biergarten mit einer entspannten Atmosphäre.",
-                                        "prate_garten"
+                                        "prater_garten"
                                     ),
                                     Place(
                                         4,
