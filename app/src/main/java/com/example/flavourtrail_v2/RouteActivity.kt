@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -212,7 +213,12 @@ fun RouteScreen() {
 
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    // Handle click event for the row
+                                    println("Clicked on $place") // Replace this with your navigation or action logic
+                                }
                         ) {
                             // Display Image
                             imageBitmap?.let {
@@ -262,6 +268,7 @@ fun RouteScreen() {
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
+
             } else {
                 Text(text = "No places found for selected route.")
             }
