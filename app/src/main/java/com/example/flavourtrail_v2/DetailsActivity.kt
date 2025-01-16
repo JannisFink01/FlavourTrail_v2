@@ -62,6 +62,13 @@ import com.example.flavourtrail_v2.data.repository.*
 import com.example.flavourtrail_v2.ui.theme.FlavourTrail_v2Theme
 import com.example.flavourtrail_v2.ui.TopBar
 import com.example.flavourtrail_v2.ui.components.ImageSection
+import com.example.flavourtrail_v2.ui.components.details.BookNowButton
+import com.example.flavourtrail_v2.ui.components.details.BottomNavigationBar
+import com.example.flavourtrail_v2.ui.components.details.DetailSection
+import com.example.flavourtrail_v2.ui.components.details.InteractionBar
+import com.example.flavourtrail_v2.ui.components.details.RateDestinationButton
+import com.example.flavourtrail_v2.ui.components.details.TimeInformationSection
+import com.example.flavourtrail_v2.ui.components.details.ViewReviewsButton
 import com.example.flavourtrail_v2.ui.components.review.RatingPopup
 import com.example.flavourtrail_v2.ui.components.review.StarRatingBar
 
@@ -134,7 +141,6 @@ fun DetailScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .verticalScroll(scrollState) // Enable scrolling
             ) {
                 InteractionBar()
                 LazyColumn {
@@ -181,70 +187,6 @@ fun DetailScreen(
     }
 }
 
-@Composable
-fun BottomNavigationBar() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            //.background(Color.Blue)
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.Absolute.Center
-    ) {
-        Row() {
-            val stopCounter = 1
-            Icon(
-                imageVector = Icons.Filled.KeyboardArrowLeft, // Use a built-in Material Icon
-                contentDescription = "Stop Count", // Provide a description for accessibility
-                modifier = Modifier
-                    .size(24.dp)
-                    .clickable { /* Handle click */ }
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(text = "$stopCounter/5")
-            Spacer(modifier = Modifier.width(8.dp))
-            Icon(
-                imageVector = Icons.Filled.KeyboardArrowRight, // Use a built-in Material Icon
-                contentDescription = "Stop Count", // Provide a description for accessibility
-                modifier = Modifier
-                    .size(24.dp)
-                    .clickable { /* Handle click */ }
-            )
-        }
-    }
-}
-
-//Definitionen der einzelnen Composables
-@Composable
-fun InteractionBar() {
-    val context = LocalContext.current
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.End
-    ) {
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack, // Use a built-in Material Icon
-            contentDescription = "ArrowBack Icon",
-            modifier = Modifier
-                .size(48.dp) // Optional: Size of the icon
-                .clickable {
-                    // Handle the back navigation
-                    val activity = (context as? Activity)
-                    activity?.finish()
-                }
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        Icon(
-            imageVector = Icons.Filled.Share, // Use a built-in Material Icon
-            contentDescription = "Share Icon",
-            modifier = Modifier.size(48.dp) // Optional: Size of the icon
-        )
-        HeartToggleIcon(
-            iconSize = 48.dp,
-            contentDescription = "Toggle Heart Icon"
-        )
-    }
-}
-
 
 @Composable
 fun TitleSection(place: Place? = null, modifier: Modifier = Modifier) {
@@ -270,131 +212,6 @@ fun PriceInformationSection(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ViewReviewsButton(placeId: Int, modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-
-    Row(
-        modifier = modifier
-    ) {
-        Icon(
-            imageVector = Icons.Default.KeyboardArrowRight,
-            contentDescription = "Star Icon",
-            modifier = Modifier.size(20.dp)
-        )
-        TextAsButton(
-            text = "View Reviews",
-            onClick = {
-                val intent = Intent(context, ReviewActivity::class.java).apply {
-                    putExtra("PLACE_ID", placeId)
-                }
-                context.startActivity(intent)
-            }
-        )
-    }
-}
-
-@Composable
-fun BookNowButton(buttonText: String) {
-    Button(
-        onClick = { /* Handle button click */ },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        colors = ButtonDefaults.buttonColors(
-            //containerColor = Color.Blue,
-            contentColor = Color.White
-        ),
-        shape = RoundedCornerShape(10.dp)
-    ) {
-        Text(
-            text = buttonText,
-            fontSize = 20.sp
-        )
-    }
-}
-
-@Composable
-fun TimeInformationSection() {
-    Column {
-        Row {
-            Icon(
-                painter = painterResource(id = R.drawable.clock_icon), // Use a built-in Material Icon
-                contentDescription = "Clock Icon", // Provide a description for accessibility
-                modifier = Modifier.size(24.dp), // Adjust size if needed
-                tint = Color.Black // Optional: Set a tint color
-            )
-            Text(
-                text = "Opening Hours",
-                fontSize = 20.sp
-            )
-        }
-        Row {
-            Icon(
-                painter = painterResource(id = R.drawable.hourglass_icon), // Use a custom icon
-                contentDescription = "Hourglass Icon", // Provide a description for accessibility
-                modifier = Modifier.size(24.dp), // Adjust size if needed
-            )
-            Text(
-                text = "Time spent",
-                fontSize = 20.sp
-            )
-        }
-    }
-}
-
-@Composable
-fun RateDestinationButton(placeReviewViewModel: PlaceReviewViewModel, placeId: Int) {
-    var showPopup by remember { mutableStateOf(false) }
-    Button(
-        onClick = { showPopup = true },
-        modifier = Modifier.width(200.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color.LightGray,
-            contentColor = Color.Black
-        ),
-        shape = RoundedCornerShape(10.dp)
-    )
-    {
-        Icon(
-            imageVector = Icons.Filled.Star, // Use a built-in Material Icon
-            contentDescription = "Star Icon", // Provide a description for accessibility
-            modifier = Modifier.size(24.dp), // Adjust size if needed
-            tint = Color.DarkGray // Optional: Set a tint color
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = "Rate Destination",
-            fontSize = 20.sp
-        )
-        if (showPopup) {
-            RatingPopup(
-                placeReviewViewModel = placeReviewViewModel,
-                placeId = placeId,
-                onDismiss = { showPopup = false })
-        }
-    }
-}
-
-@Composable
-fun DetailSection(place: Place) {
-
-
-    // Box to hold the content with a background color
-    Box(
-        modifier = Modifier
-            .fillMaxSize() // Occupies the entire screen
-            .background(Color.LightGray) // Background color
-    ) {
-        // Text content inside the Box
-        Text(
-            text = place.description,
-            fontSize = 20.sp,
-            modifier = Modifier.padding(16.dp) // Padding around the text
-        )
-    }
-}
-
-@Composable
 fun TextAsButton(
     onClick: () -> Unit,
     text: String = "Clickable Text",
@@ -406,24 +223,5 @@ fun TextAsButton(
         modifier = Modifier.clickable {
             onClick()  // Trigger the navigation or action
         }
-    )
-}
-
-@Composable
-fun HeartToggleIcon(
-    iconSize: Dp = 48.dp, // Parameter to control the size of the icon
-    contentDescription: String = "Toggle Heart Icon" // Parameter for accessibility
-) {
-    // MutableState to track the heart's state
-    var isHeartSelected by remember { mutableStateOf(false) }
-
-    // Clickable Icon
-    Icon(
-        imageVector = if (isHeartSelected) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-        contentDescription = contentDescription, // Use parameter
-        modifier = Modifier
-            .size(iconSize) // Use parameter for size
-            .clickable { isHeartSelected = !isHeartSelected }, // Toggle the state on click
-        tint = if (isHeartSelected) Color.Red else Color.Black // Optional: Change tint color
     )
 }
