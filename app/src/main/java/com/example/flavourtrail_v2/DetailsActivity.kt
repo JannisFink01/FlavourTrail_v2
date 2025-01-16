@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -100,12 +101,11 @@ fun DetailScreen(
     }
     val averageRating = placeWithDetails.map { it.placeReview.rating }.average().toFloat()
 
-    // Create a scrollable state for vertical scrolling
     FlavourTrail_v2Theme {
         Scaffold(
             topBar = {
                 TopBar(
-                    userName = "Max Mustermann", // Beispiel-Benutzername
+                    userName = "John Doe", // Beispiel-Benutzername
                     profileImageRes = R.drawable.profile_user
                 )
             },
@@ -141,7 +141,6 @@ fun DetailScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             StarRatingSection(averageRating = averageRating)
-                            PriceInformationSection()
                         }
                     }
                     item {
@@ -185,15 +184,6 @@ fun TitleSection(place: Place? = null, modifier: Modifier = Modifier) {
 @Composable
 fun StarRatingSection(averageRating: Float, modifier: Modifier = Modifier) {
     StarRatingBar(5, averageRating, false)
-}
-
-@Composable
-fun PriceInformationSection(modifier: Modifier = Modifier) {
-    Text(
-        text = "35,99€",
-        fontSize = 20.sp,
-        modifier = modifier
-    )
 }
 
 @Composable

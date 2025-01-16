@@ -60,15 +60,29 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
+import com.google.accompanist.flowlayout.FlowRow
 
-
+/**
+ * Activity for planning routes in the FlavourTrail app.
+ *
+ * This activity provides a UI for users to select a city, define transportation modes, set preferences,
+ * and initiate their route planning. It integrates location services for real-time city selection.
+ */
 class PlanRouteActivity : BaseActivity() {
+    /**
+     * Displays the content of the activity using the PlanRouteScreen composable.
+     */
     @Composable
     override fun Content() {
         PlanRouteScreen(this)
     }
 }
 
+/**
+ * Main composable function for the route planning UI.
+ *
+ * @param context The context for accessing resources and launching activities.
+ */
 @Composable
 fun PlanRouteScreen(context: Context) {
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
@@ -80,28 +94,13 @@ fun PlanRouteScreen(context: Context) {
     val numberOfStops = remember { mutableStateOf("") }
     var showDropdown by remember { mutableStateOf(false) }
 
-    // Liste der Tags
     val staticPlaceTags = listOf(
-        "Club",
-        "Bar",
-        "Biergarten",
-        "Restaurant",
-        "Café",
-        "Cocktails",
-        "Mocktails",
-        "Craft beer",
-        "Rooftop",
-        "Beach view",
-        "Live music",
-        "Vegan",
-        "Vegetarian",
-        "Kid-friendly",
-        "Pet-friendly",
-        "Sports viewing"
+        "Club", "Bar", "Biergarten", "Restaurant", "Café", "Cocktails", "Mocktails",
+        "Craft beer", "Rooftop", "Beach view", "Live music", "Vegan", "Vegetarian",
+        "Kid-friendly", "Pet-friendly", "Sports viewing"
     )
 
     val selectedTags = remember { mutableStateListOf<String>() }
-
     val scrollState = rememberScrollState()
 
     FlavourTrail_v2Theme {
@@ -113,9 +112,11 @@ fun PlanRouteScreen(context: Context) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
-                modifier = Modifier.fillMaxWidth().verticalScroll(scrollState)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(scrollState)
             ) {
-                // Überschrift oben
+                // Header text
                 Text(
                     text = "Plan your Route",
                     fontSize = 20.sp,
@@ -123,7 +124,7 @@ fun PlanRouteScreen(context: Context) {
                     modifier = Modifier.padding(bottom = 25.dp)
                 )
 
-                // Erster Bereich: Stadt auswählen
+                // City selection section
                 Column(
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Center,
@@ -168,7 +169,7 @@ fun PlanRouteScreen(context: Context) {
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Zweiter Bereich: Transportmodus und Stopps
+                // Transport mode and stops section
                 Column(
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Center,
@@ -198,7 +199,7 @@ fun PlanRouteScreen(context: Context) {
                                 },
                                 label = { Text("Transport mode") },
                                 modifier = Modifier.fillMaxWidth(),
-                                readOnly = true, // Verhindert direkte Eingabe
+                                readOnly = true,
                                 trailingIcon = {
                                     IconButton(onClick = { showDropdown = !showDropdown }) {
                                         Icon(
@@ -243,7 +244,7 @@ fun PlanRouteScreen(context: Context) {
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Dritter Bereich: Präferenzen wählen
+                // Preferences section
                 if (selectedTags.isNotEmpty()) {
                     FlowRow(
                         modifier = Modifier
@@ -301,12 +302,11 @@ fun PlanRouteScreen(context: Context) {
                             }
                         }
                     }
-
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Buttons am Ende
+                // Buttons at the bottom
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -328,15 +328,19 @@ fun PlanRouteScreen(context: Context) {
                     ) {
                         Text(text = "Let's Go!")
                     }
-
                 }
-
             }
         }
     }
 }
 
-
+/**
+ * Fetches the current location and updates the city name.
+ *
+ * @param context The application context.
+ * @param fusedLocationClient The client for fetching location data.
+ * @param cityName The mutable state for storing the city name.
+ */
 @SuppressLint("MissingPermission")
 suspend fun fetchCurrentLocation(
     context: Context,
@@ -346,11 +350,10 @@ suspend fun fetchCurrentLocation(
     try {
         val locationRequest = com.google.android.gms.location.LocationRequest.create().apply {
             priority = com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
-            interval = 500 // 1 Sekunde
+            interval = 500
             fastestInterval = 300
         }
 
-        // Listener für Standortupdates
         val locationCallback = object : com.google.android.gms.location.LocationCallback() {
             override fun onLocationResult(locationResult: com.google.android.gms.location.LocationResult) {
                 val location = locationResult.lastLocation
@@ -361,7 +364,6 @@ suspend fun fetchCurrentLocation(
             }
         }
 
-        // Standortupdates starten
         withContext(Dispatchers.IO) {
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
         }
@@ -373,6 +375,14 @@ suspend fun fetchCurrentLocation(
     }
 }
 
+/**
+ * Retrieves the city name based on latitude and longitude.
+ *
+ * @param context The application context.
+ * @param latitude The latitude of the location.
+ * @param longitude The longitude of the location.
+ * @return The city name or an error message if unavailable.
+ */
 private fun getCityNameFromCoordinates(context: Context, latitude: Double, longitude: Double): String {
     return try {
         val geocoder = Geocoder(context, Locale.getDefault())
@@ -388,6 +398,12 @@ private fun getCityNameFromCoordinates(context: Context, latitude: Double, longi
     }
 }
 
+/**
+ * Composable function for displaying a tag in a chip format with a remove option.
+ *
+ * @param tagName The name of the tag to display.
+ * @param onRemove The callback to invoke when the tag is removed.
+ */
 @Composable
 fun Chip(tagName: String, onRemove: () -> Unit) {
     Box(
