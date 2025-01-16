@@ -1,6 +1,7 @@
 package com.example.flavourtrail_v2.ui.components.details
 
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,7 +40,7 @@ fun RateDestinationButton(placeReviewViewModel: PlaceReviewViewModel, placeId: I
     // Button for triggering the rating popup
     Button(
         onClick = { showPopup = true }, // Show the popup when clicked
-        modifier = Modifier.width(200.dp),
+        modifier = Modifier.fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.LightGray, // Background color of the button
             contentColor = Color.Black // Text and icon color
