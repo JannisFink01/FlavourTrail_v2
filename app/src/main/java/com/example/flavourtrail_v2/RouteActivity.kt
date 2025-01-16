@@ -5,8 +5,10 @@ import android.content.pm.PackageManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
@@ -24,6 +27,8 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import com.example.flavourtrail_v2.data.AppDatabase
+import androidx.compose.foundation.lazy.itemsIndexed
+
 
 class RouteActivity : BaseActivity() {
     @Composable
@@ -36,7 +41,6 @@ class RouteActivity : BaseActivity() {
 @Composable
 fun RouteScreen() {
     val context = LocalContext.current
-
     // Safely get route_id from the Intent
     val routeIdFromIntent = (context as? RouteActivity)?.intent?.getIntExtra("ROUTE_ID", -1) ?: -1
 
@@ -50,9 +54,10 @@ fun RouteScreen() {
         when (numberOfStops) {
             5 -> 1 // Route 1 for 5 stops
             4 -> 2 // Route 2 for 4 stops
-            else -> 2 // Default to Route 2
+            else -> 2 // Default to Route 2 for other values
         }
     }
+    //val selectedRoute by remember { mutableStateOf(defaultRoute) }
 
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
 
@@ -91,13 +96,14 @@ fun RouteScreen() {
         }
     }
 
-    // Fetch route and place data based on the determined routeId
     LaunchedEffect(routeId) {
         val route = routeDao.getRouteById(routeId)
         routeName = route?.name ?: "Unknown Route"
         routeDescription = route?.description ?: "No description available."
 
         val allRoutePlaces = routePlaceDao.getAllRoutePlaces()
+        //val routeId = if (selectedRoute == 1) routeId1 else routeId2
+
         val placeIds = allRoutePlaces.filter { it.routeId == routeId }.map { it.placeId }
 
         val places = placeIds.mapNotNull { placeId ->
@@ -133,15 +139,7 @@ fun RouteScreen() {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // Display route description
-            Text(
-                text = routeDescription,
-                style = MaterialTheme.typography.bodyLarge
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Search bar with buttons
+            // Search Bar with Buttons
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -149,10 +147,17 @@ fun RouteScreen() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                // Search Bar
                 OutlinedTextField(
                     value = searchText,
                     onValueChange = { newText -> searchText = newText },
                     label = { Text("Search") },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_search),
+                            contentDescription = "Search Icon"
+                        )
+                    },
                     modifier = Modifier
                         .weight(1f)
                         .padding(end = 8.dp)
@@ -160,11 +165,35 @@ fun RouteScreen() {
                     singleLine = true,
                     shape = RoundedCornerShape(16.dp)
                 )
+
+                // Right Buttons
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    IconButton(onClick = { /* Handle Right Button 1 Click */ }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_fullscreen),
+                            contentDescription = "Fullscreen Icon"
+                        )
+                    }
+
+                    IconButton(onClick = { /* Handle Right Button 2 Click */ }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_share),
+                            contentDescription = "Share Icon"
+                        )
+                    }
+
+                    IconButton(onClick = { /* Handle Right Button 3 Click */ }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_download),
+                            contentDescription = "Download Icon"
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Display Google Map
+            // Google Maps
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -182,30 +211,86 @@ fun RouteScreen() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Display list of places
+            // Display List of Place Names with Images and Type
             if (filteredPlaceNames.isNotEmpty()) {
                 LazyColumn {
-                    items(filteredPlaceNames) { place ->
+                    itemsIndexed(filteredPlaceNames) { index, place ->
                         val placeIndex = placeNames.indexOf(place)
+                        val imageFileName = place.replace(" ", "_").lowercase()
+                        val drawableId = context.resources.getIdentifier(imageFileName, "drawable", context.packageName)
+
+                        // Check if the image exists in drawable folder
+                        val imageBitmap = if (drawableId != 0) {
+                            painterResource(id = drawableId)
+                        } else {
+                            null
+                        }
+
                         val placeType = filteredPlaceTypes[placeIndex]
 
-                        Column(modifier = Modifier.padding(8.dp)) {
-                            Text(
-                                text = place,
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Text(
-                                text = placeType,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = Color.Gray
-                            )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    // Handle click event for the row
+                                    println("Clicked on $place") // Replace this with your navigation or action logic
+                                }
+                        ) {
+                            // Display Image
+                            imageBitmap?.let {
+                                Image(
+                                    painter = it,
+                                    contentDescription = "$place Image",
+                                    modifier = Modifier
+                                        .size(50.dp)
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(Color.Gray)
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.width(8.dp))
+
+                            // Display Name and Type
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = place,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                                Text(
+                                    text = placeType,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = Color.Gray
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.weight(1f))
+
+                            // Display Number with Frame on the right
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .size(30.dp)  // Adjust the size of the frame
+                                    .clip(RoundedCornerShape(50))  // Round the frame
+                                    .border(2.dp, Color.Black, RoundedCornerShape(50))  // Border around the frame
+                                    .padding(4.dp)  // Padding inside the frame
+                            ) {
+                                Text(
+                                    text = (index + 1).toString(),
+                                    style = MaterialTheme.typography.bodySmall.copy(color = Color.Black),
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
+
             } else {
-                Text("No places found for this route.")
+                Text(text = "No places found for selected route.")
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
