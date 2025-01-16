@@ -242,7 +242,7 @@ fun RouteScreen() {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    navigateToDetailsActivity(context, routePlaceDao, routeId)
+                                    navigateToDetailsActivity(context, routePlaceDao, routeId, index)
                                 }
 
                         ) {
@@ -307,7 +307,8 @@ fun RouteScreen() {
 fun navigateToDetailsActivity(
     context: Context,
     routePlaceDao: RoutePlaceDao,
-    routeId: Int
+    routeId: Int,
+    clickedIndex: Int
 ) {
     CoroutineScope(Dispatchers.IO).launch {
         // Abfrage der Place IDs basierend auf der aktuellen Route
@@ -319,6 +320,7 @@ fun navigateToDetailsActivity(
         withContext(Dispatchers.Main) {
             val intent = Intent(context, DetailsActivity::class.java).apply {
                 putIntegerArrayListExtra("PLACE_IDS", ArrayList(placeIds))
+                putExtra("CLICKED_INDEX", clickedIndex)
             }
             context.startActivity(intent)
         }
