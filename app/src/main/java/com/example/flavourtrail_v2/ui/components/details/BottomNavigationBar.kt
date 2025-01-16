@@ -16,6 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/**
+ * A composable function for displaying a bottom navigation bar with controls to navigate stops.
+ *
+ * This navigation bar includes left and right navigation icons with a text indicator to show
+ * the current stop number out of a total number of stops. The icons are clickable and allow for
+ * interaction to move between stops.
+ */
 @Composable
 fun BottomNavigationBar() {
     Row(
@@ -23,24 +30,24 @@ fun BottomNavigationBar() {
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.Absolute.Center
     ) {
-        Row() {
-            val stopCounter = 1
+        Row {
+            val stopCounter = 1 // Current stop indicator
             Icon(
-                imageVector = Icons.Filled.KeyboardArrowLeft, // Use a built-in Material Icon
-                contentDescription = "Stop Count", // Provide a description for accessibility
+                imageVector = Icons.Filled.KeyboardArrowLeft, // Left navigation icon
+                contentDescription = "Previous Stop", // Description for accessibility
                 modifier = Modifier
                     .size(24.dp)
-                    .clickable { /* Handle click */ }
+                    .clickable { /* Handle click for previous stop */ }
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = "$stopCounter/5")
+            Text(text = "$stopCounter/5") // Display current stop and total stops
             Spacer(modifier = Modifier.width(8.dp))
             Icon(
-                imageVector = Icons.Filled.KeyboardArrowRight, // Use a built-in Material Icon
-                contentDescription = "Stop Count", // Provide a description for accessibility
+                imageVector = Icons.Filled.KeyboardArrowRight, // Right navigation icon
+                contentDescription = "Next Stop", // Description for accessibility
                 modifier = Modifier
                     .size(24.dp)
-                    .clickable { /* Handle click */ }
+                    .clickable { /* Handle click for next stop */ }
             )
         }
     }

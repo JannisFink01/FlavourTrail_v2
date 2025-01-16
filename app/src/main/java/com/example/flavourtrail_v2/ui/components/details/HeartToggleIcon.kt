@@ -16,22 +16,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-
+/**
+ * A composable function for displaying a toggleable heart icon.
+ *
+ * This icon allows users to toggle between a selected (filled heart) and unselected (outlined heart) state.
+ * The icon size and content description are configurable via parameters.
+ *
+ * @param iconSize The size of the heart icon. Default is 48.dp.
+ * @param contentDescription Accessibility description for the icon. Default is "Toggle Heart Icon".
+ */
 @Composable
 fun HeartToggleIcon(
     iconSize: Dp = 48.dp, // Parameter to control the size of the icon
     contentDescription: String = "Toggle Heart Icon" // Parameter for accessibility
 ) {
-    // MutableState to track the heart's state
+    // Mutable state to track the selection state of the heart icon
     var isHeartSelected by remember { mutableStateOf(false) }
 
-    // Clickable Icon
+    // Render the clickable heart icon
     Icon(
         imageVector = if (isHeartSelected) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-        contentDescription = contentDescription, // Use parameter
+        contentDescription = contentDescription, // Accessibility description
         modifier = Modifier
-            .size(iconSize) // Use parameter for size
-            .clickable { isHeartSelected = !isHeartSelected }, // Toggle the state on click
-        tint = if (isHeartSelected) Color.Red else Color.Black // Optional: Change tint color
+            .size(iconSize) // Apply the size parameter
+            .clickable { isHeartSelected = !isHeartSelected }, // Toggle state on click
+        tint = if (isHeartSelected) Color.Red else Color.Black // Change color based on state
     )
 }
