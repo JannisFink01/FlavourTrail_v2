@@ -1,5 +1,6 @@
 package com.example.flavourtrail_v2
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -46,23 +47,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.flavourtrail_v2.data.AppDatabase
-import com.example.flavourtrail_v2.data.ViewModel.PlaceViewModel
-import com.example.flavourtrail_v2.data.ViewModel.PlaceViewModelFactory
-import com.example.flavourtrail_v2.data.entity.Place
-import com.example.flavourtrail_v2.data.repository.PlaceRepository
+import com.example.flavourtrail_v2.data.ViewModel.*
+import com.example.flavourtrail_v2.data.entity.*
+import com.example.flavourtrail_v2.data.repository.*
 import com.example.flavourtrail_v2.ui.theme.FlavourTrail_v2Theme
 import com.example.flavourtrail_v2.ui.TopBar
+import com.example.flavourtrail_v2.ui.components.review.StarRatingBar
 
 class DetailsActivity : ComponentActivity() {
-    private val placeViewModel: PlaceViewModel by viewModels{
+    private val placeViewModel: PlaceViewModel by viewModels {
         PlaceViewModelFactory(
             PlaceRepository(
                 AppDatabase.getInstance(application).placeDao()
+            )
+        )
+    }
+    private val placeReviewViewModel: PlaceReviewViewModel by viewModels {
+        ReviewViewModelFactory(
+            PlaceReviewRepository(
+                AppDatabase.getInstance(application).placeReviewDao()
             )
         )
     }
@@ -70,11 +79,12 @@ class DetailsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent{
+        setContent {
             FlavourTrail_v2Theme {
                 DetailScreen(
                     placeId = intent.getIntExtra("PLACE_ID", 1), // Default to 1 if not provided
-                    placeViewModel = placeViewModel
+                    placeViewModel = placeViewModel,
+                    placeReviewViewModel = placeReviewViewModel
                 )
             }
         }
@@ -85,13 +95,17 @@ class DetailsActivity : ComponentActivity() {
 fun DetailScreen(
     placeId: Int,
     placeViewModel: PlaceViewModel,
+    placeReviewViewModel: PlaceReviewViewModel,
     modifier: Modifier = Modifier
-    ) {
+) {
     var place by remember { mutableStateOf<Place?>(null) }
-
+    val placeWithDetails by placeReviewViewModel.reviews.collectAsState()
     LaunchedEffect(placeId) {
-        placeViewModel.getPlaceById(placeId)
+        place = placeViewModel.getPlaceById(placeId)
+        placeReviewViewModel.getReviewsWithDetailsByPlaceId(placeId)
     }
+    val averageRating = placeWithDetails.map { it.placeReview.rating }.average().toFloat()
+
     // Create a scrollable state for vertical scrolling
     val scrollState = rememberScrollState() // State to control scrolling
     Scaffold(
@@ -102,7 +116,7 @@ fun DetailScreen(
             )
         },
         bottomBar = {
-            NavigationBar{
+            NavigationBar {
                 BottomNavigationBar()
             }
         }
@@ -115,27 +129,29 @@ fun DetailScreen(
                 .verticalScroll(scrollState) // Enable scrolling
         ) {
             InteractionBar()
-            ImageSection()
-            TitleSection(modifier = Modifier.padding(16.dp))
+            ImageSection(place = place)
+            TitleSection(place = place, modifier = Modifier.padding(16.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                StarRatingSection()
+                StarRatingSection(averageRating = averageRating)
                 PriceInformationSection()
-                }
+            }
             Box(
                 Modifier.align(Alignment.Start)
             ) {
-                ViewReviewsButton()
+                ViewReviewsButton(placeId = placeId)
             }
             BookNowButton("Book Now")
             Row(modifier = Modifier.padding(16.dp)) {
                 TimeInformationSection()
-                Spacer(modifier=Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(16.dp))
                 RateDestinationButton()
             }
-            DetailSection()
+            place?.let {
+                DetailSection(place = it)
+            }
         }
     }
 }
@@ -155,7 +171,7 @@ fun BottomNavigationBar() {
                 modifier = Modifier.size(24.dp),
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text= "1/5")
+            Text(text = "1/5")
             Spacer(modifier = Modifier.width(8.dp))
             Icon(
                 imageVector = Icons.Filled.KeyboardArrowRight, // Use a built-in Material Icon
@@ -180,7 +196,7 @@ fun BottomNavigationBar() {
 
 //Definitionen der einzelnen Composables
 @Composable
-fun InteractionBar(){
+fun InteractionBar() {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End
@@ -204,31 +220,34 @@ fun InteractionBar(){
 }
 
 @Composable
-fun ImageSection(Place: Place? = null) {
+fun ImageSection(place: Place? = null) {
+    val context = LocalContext.current
+    val imageId =
+        context.resources.getIdentifier(place?.image, "drawable", context.packageName)
+    val imagePainter = if (imageId != 0) {
+        painterResource(id = imageId)
+    } else {
+        painterResource(id = R.drawable.destination_placeholder)
+    }
     Image(
-        painter = painterResource(id = R.drawable.destination_placeholder),
+        painter = imagePainter,
         contentDescription = "Image",
         modifier = Modifier.fillMaxWidth()
     )
 }
 
 @Composable
-fun TitleSection(modifier: Modifier = Modifier) {
+fun TitleSection(place: Place? = null, modifier: Modifier = Modifier) {
     Text(
-        text = "Title",
+        text = place?.name ?: "Placeholder",
         fontSize = 24.sp,
         modifier = modifier
     )
 }
 
 @Composable
-fun StarRatingSection(modifier: Modifier = Modifier) {
-    Text(
-        text = "Star Rating",
-        fontSize = 20.sp,
-        color = Color.Yellow,
-        modifier = modifier
-    )
+fun StarRatingSection(averageRating: Float, modifier: Modifier = Modifier) {
+    StarRatingBar(5, averageRating, false)
 }
 
 @Composable
@@ -241,7 +260,9 @@ fun PriceInformationSection(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ViewReviewsButton(modifier: Modifier = Modifier) {
+fun ViewReviewsButton(placeId: Int, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+
     Row(
         modifier = modifier
     ) {
@@ -252,7 +273,12 @@ fun ViewReviewsButton(modifier: Modifier = Modifier) {
         )
         TextAsButton(
             text = "View Reviews",
-            onClick = { /* Handle button click */ }
+            onClick = {
+                val intent = Intent(context, ReviewActivity::class.java).apply {
+                    putExtra("PLACE_ID", placeId)
+                }
+                context.startActivity(intent)
+            }
         )
     }
 }
@@ -278,9 +304,9 @@ fun BookNowButton(buttonText: String) {
 }
 
 @Composable
-fun TimeInformationSection(){
-    Column{
-        Row{
+fun TimeInformationSection() {
+    Column {
+        Row {
             Icon(
                 painter = painterResource(id = R.drawable.clock_icon), // Use a built-in Material Icon
                 contentDescription = "Clock Icon", // Provide a description for accessibility
@@ -332,7 +358,7 @@ fun RateDestinationButton() {
 }
 
 @Composable
-fun DetailSection() {
+fun DetailSection(place: Place) {
 
 
     // Box to hold the content with a background color
@@ -343,15 +369,7 @@ fun DetailSection() {
     ) {
         // Text content inside the Box
         Text(
-            text = """
-                Here is some interesting text, which describes the destination 
-                and makes the user want to visit it. Lorem ipsum dolor sit amet, 
-                consectetur adipiscing elit. Curabitur porttitor lorem at odio 
-                efficitur, id efficitur lorem consectetur. Phasellus bibendum 
-                nisl eu ex gravida, sit amet fermentum nisl suscipit.
-                
-                Add as much text as you like here. The box will scroll if content exceeds the screen height.
-            """.trimIndent(),
+            text = place.description,
             fontSize = 20.sp,
             modifier = Modifier.padding(16.dp) // Padding around the text
         )
@@ -377,7 +395,7 @@ fun TextAsButton(
 fun HeartToggleIcon(
     iconSize: Dp = 48.dp, // Parameter to control the size of the icon
     contentDescription: String = "Toggle Heart Icon" // Parameter for accessibility
-){
+) {
     // MutableState to track the heart's state
     var isHeartSelected by remember { mutableStateOf(false) }
 

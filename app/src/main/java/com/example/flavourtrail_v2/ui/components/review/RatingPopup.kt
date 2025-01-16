@@ -28,8 +28,7 @@ import androidx.compose.material3.IconButton
 import com.example.flavourtrail_v2.data.ViewModel.PlaceViewModel
 
 @Composable
-fun RatingPopup(placeId: Int, onDismiss: () -> Unit) {
-    val reviewViewModel = PlaceReviewViewModel = viewModel()
+fun RatingPopup(placeReviewViewModel: PlaceReviewViewModel, placeId: Int, onDismiss: () -> Unit) {
     var text by remember { mutableStateOf("") }
     var rating by remember { mutableStateOf(0f) }
     AlertDialog(
@@ -65,7 +64,7 @@ fun RatingPopup(placeId: Int, onDismiss: () -> Unit) {
                     comment = text,
                     date = Date() // aktuelles Datum
                 )
-                reviewViewModel.insertPlaceReview(placeReview)
+                placeReviewViewModel.insertPlaceReview(placeReview)
                 onDismiss()
             }) {
                 Text("Speichern")
@@ -80,7 +79,7 @@ fun RatingPopup(placeId: Int, onDismiss: () -> Unit) {
 }
 
 @Composable
-fun ShowRatingPopupButton(placeId: Int, viewModel: PlaceViewModel) {
+fun ShowRatingPopupButton(placeReviewViewModel: PlaceReviewViewModel,placeId: Int) {
     var showPopup by remember { mutableStateOf(false) }
 
     Button(onClick = { showPopup = true }) {
@@ -88,6 +87,6 @@ fun ShowRatingPopupButton(placeId: Int, viewModel: PlaceViewModel) {
     }
 
     if (showPopup) {
-        RatingPopup(placeId, onDismiss = { showPopup = false })
+        RatingPopup(placeReviewViewModel = placeReviewViewModel, placeId = placeId, onDismiss = { showPopup = false })
     }
 }

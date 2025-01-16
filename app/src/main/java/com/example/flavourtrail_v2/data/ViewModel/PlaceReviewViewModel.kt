@@ -19,11 +19,13 @@ open class PlaceReviewViewModel(private val repository: PlaceReviewRepository) :
             _reviews.value = repository.getPlaceReviewsWithDetailsByPlaceId(placeId)
         }
     }
+
     fun getReviewsWithDetailsByPlaceId(placeId: Int) {
         viewModelScope.launch {
             _reviews.value = repository.getPlaceReviewsWithDetailsByPlaceId(placeId)
         }
     }
+
     fun insertPlaceReview(placeReview: PlaceReview) {
         viewModelScope.launch {
             repository.insertPlaceReview(placeReview)
