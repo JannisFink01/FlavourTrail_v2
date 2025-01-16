@@ -1,5 +1,6 @@
 package com.example.flavourtrail_v2
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -44,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -168,6 +170,7 @@ fun BottomNavigationBar() {
 //Definitionen der einzelnen Composables
 @Composable
 fun InteractionBar(){
+    val context = LocalContext.current
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End
@@ -177,7 +180,11 @@ fun InteractionBar(){
             contentDescription = "ArrowBack Icon",
             modifier = Modifier
                 .size(48.dp) // Optional: Size of the icon
-                .clickable { /* Handle click */ }
+                .clickable {
+                    // Handle the back navigation
+                    val activity = (context as? Activity)
+                    activity?.finish()
+                }
         )
         Spacer(modifier = Modifier.weight(1f))
         Icon(
