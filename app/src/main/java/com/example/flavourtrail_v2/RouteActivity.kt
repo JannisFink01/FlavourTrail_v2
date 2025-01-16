@@ -248,14 +248,19 @@ fun RouteScreen() {
                 LazyColumn {
                     itemsIndexed(filteredPlaceNames) { index, place ->
                         val placeIndex = placeNames.indexOf(place)
-                        val imageFileName = place.replace(" ", "_").lowercase()
+                        val imageFileName = place.replace(" ", "_")      // Replace spaces with underscores
+                            .lowercase()          // Convert to lowercase
+                            .replace("é", "e")     // Replace accented 'é' with 'e'
+                            .replace(".", "_")     // Replace periods with underscores
+                            .replace("__", "_")    // Ensure no double underscores
+                            .trim('_')             // Remove trailing underscores if any
                         val drawableId = context.resources.getIdentifier(imageFileName, "drawable", context.packageName)
 
                         // Check if the image exists in drawable folder
                         val imageBitmap = if (drawableId != 0) {
                             painterResource(id = drawableId)
                         } else {
-                            null
+                            painterResource(id = R.drawable.placeholder)
                         }
 
                         val placeType = filteredPlaceTypes[placeIndex]
