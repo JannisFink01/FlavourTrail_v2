@@ -109,7 +109,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         52.497587,
                                         13.503745,
                                         "Ein legendärer Open-Air-Club mit einem einzigartigen Festival-Vibe.",
-                                        "sisyphos.jpg"
+                                        "sisyphos"
                                     ),
                                     Place(
                                         2,
@@ -121,7 +121,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         52.511282,
                                         13.439657,
                                         "Der weltweit bekannte Techno-Club mit unvergesslicher Atmosphäre.",
-                                        "berghain.jpg"
+                                        "berghain"
                                     ),
                                     Place(
                                         3,
@@ -133,7 +133,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         52.540120,
                                         13.413460,
                                         "Berlins ältester Biergarten mit einer entspannten Atmosphäre.",
-                                        "prate_garten.jpg"
+                                        "prate_garten"
                                     ),
                                     Place(
                                         4,
@@ -145,7 +145,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         52.507580,
                                         13.336702,
                                         "Eine stylische Bar mit atemberaubendem Blick auf den Berliner Zoo.",
-                                        "monkey_bar.jpg"
+                                        "monkey_bar"
                                     ),
                                     Place(
                                         5,
@@ -157,7 +157,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         52.524180,
                                         13.386030,
                                         "Ein charmantes Café mit einem Fokus auf gemütliche Atmosphäre und leckeres Essen.",
-                                        "houseofsmallwonders.jpg"
+                                        "houseofsmallwonders"
                                     ),
                                     Place(
                                         6,
@@ -169,7 +169,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         52.477122,
                                         13.444854,
                                         "Ein Rooftop-Bar-Highlight mit Livemusik und einem atemberaubenden Blick über Berlin.",
-                                        "klunkerkranich.jpg"
+                                        "klunkerkranich"
                                     ),
                                     Place(
                                         7,
@@ -181,7 +181,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         52.534013,
                                         13.444503,
                                         "Ein einzigartiger Club mit künstlerischem Fokus und alternativer Musik.",
-                                        "anomalie_art.jpg"
+                                        "anomalie_art"
                                     ),
                                     Place(
                                         8,
@@ -193,7 +193,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         52.499002,
                                         13.418398,
                                         "Ein beliebter Treffpunkt in Kreuzberg mit einer entspannten Atmosphäre und guten Drinks.",
-                                        "cafe_luzia.jpg"
+                                        "cafe_luzia"
                                     ),
                                     Place(
                                         9,
@@ -205,7 +205,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         52.513366,
                                         13.391569,
                                         "Eine elegante Bar mit klassischen Cocktails und Fotos von Helmut Newton.",
-                                        "newton_bar.jpg"
+                                        "newton_bar"
                                     ),
                                     Place(
                                         10,
@@ -217,7 +217,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         52.529011,
                                         13.401138,
                                         "Ein hipper Coworking-Space und Café, ideal für Freelancer.",
-                                        "st_oberholz.jpg"
+                                        "st_oberholz"
                                     )
                                 )
                                 // Insert Routes
