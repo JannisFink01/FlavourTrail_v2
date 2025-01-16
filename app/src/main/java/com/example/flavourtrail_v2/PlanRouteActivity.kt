@@ -60,7 +60,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
-import com.google.accompanist.flowlayout.FlowRow
 
 /**
  * Activity for planning routes in the FlavourTrail app.
