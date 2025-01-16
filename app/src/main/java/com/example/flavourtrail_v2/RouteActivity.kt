@@ -37,19 +37,26 @@ class RouteActivity : BaseActivity() {
     }
 }
 
-//@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RouteScreen() {
     val context = LocalContext.current
+    // Safely get route_id from the Intent
+    val routeIdFromIntent = (context as? RouteActivity)?.intent?.getIntExtra("ROUTE_ID", -1) ?: -1
+
+    // Safely get numberOfStops from the Intent
     val numberOfStops = (context as? RouteActivity)?.intent?.getIntExtra("numberOfStops", 0) ?: 0
 
-    // Determine selected route based on number of stops
-    val defaultRoute = when (numberOfStops) {
-        5 -> 1 // Route 1 for input 5
-        4 -> 2 // Route 2 for input 4
-        else -> 2 // Default to Route 2 for other values
+    // Determine the route_id based on numberOfStops only if routeIdFromIntent is not set
+    val routeId = if (routeIdFromIntent != -1) {
+        routeIdFromIntent
+    } else {
+        when (numberOfStops) {
+            5 -> 1 // Route 1 for 5 stops
+            4 -> 2 // Route 2 for 4 stops
+            else -> 2 // Default to Route 2 for other values
+        }
     }
-    val selectedRoute by remember { mutableStateOf(defaultRoute) }
+    //val selectedRoute by remember { mutableStateOf(defaultRoute) }
 
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
 
@@ -60,12 +67,14 @@ fun RouteScreen() {
     val database = AppDatabase.getInstance(context)
     val routePlaceDao = database.routePlaceDao()
     val placeDao = database.placeDao()
+    val routeDao = database.routeDao()
 
     var placeNames by remember { mutableStateOf<List<String>>(emptyList()) }
     var placeTypes by remember { mutableStateOf<List<String>>(emptyList()) }
-    val routeId1 = 1
-    val routeId2 = 2
+    var routeName by remember { mutableStateOf("") }
+    var routeDescription by remember { mutableStateOf("") }
 
+    // Fetch current location
     LaunchedEffect(Unit) {
         if (ContextCompat.checkSelfPermission(
                 context,
@@ -82,13 +91,17 @@ fun RouteScreen() {
                 }
             }
         } else {
-            currentLocation = LatLng(0.0, 0.0)
+            currentLocation = LatLng(0.0, 0.0) // Default location if permissions are missing
         }
     }
 
-    LaunchedEffect(selectedRoute) {
+    LaunchedEffect(routeId) {
+        val route = routeDao.getRouteById(routeId)
+        routeName = route?.name ?: "Unknown Route"
+        routeDescription = route?.description ?: "No description available."
+
         val allRoutePlaces = routePlaceDao.getAllRoutePlaces()
-        val routeId = if (selectedRoute == 1) routeId1 else routeId2
+        //val routeId = if (selectedRoute == 1) routeId1 else routeId2
 
         val placeIds = allRoutePlaces.filter { it.routeId == routeId }.map { it.placeId }
 
