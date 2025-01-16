@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -55,9 +56,9 @@ class DetailsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent{
-            FlavourTrail_v2Theme {
-                DetailScreen()
-            }
+
+            DetailScreen()
+
         }
     }
 }
@@ -66,56 +67,68 @@ class DetailsActivity : ComponentActivity() {
 fun DetailScreen() {
     // Create a scrollable state for vertical scrolling
     val scrollState = rememberScrollState() // State to control scrolling
-    Scaffold(
-        topBar = {
+    FlavourTrail_v2Theme {
+        Scaffold(
+            topBar = {
             TopBar(
                 userName = "Max Mustermann", // Beispiel-Benutzername
                 profileImageRes = R.drawable.profile_user
             )
         },
-        bottomBar = {
-            NavigationBar{
-                BottomNavigationBar()
+            bottomBar = {
+            FlavourTrail_v2Theme {
+                NavigationBar{
+                    BottomNavigationBar()
+                }
+            }
+            }
+        )
+        { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            InteractionBar()
+            LazyColumn {
+                item{
+                    ImageSection()
+                }
+                item{
+                    TitleSection(modifier = Modifier.padding(16.dp))
+                }
+                item{
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        StarRatingSection()
+                        PriceInformationSection()
+                    }
+                }
+                item{
+                    Box(
+                        Modifier.align(Alignment.Start)
+                    ) {
+                        ViewReviewsButton()
+                    }
+                }
+                item{
+                    BookNowButton("Book Now")
+                }
+                item{
+                    Row(modifier = Modifier.padding(16.dp)) {
+                        TimeInformationSection()
+                        Spacer(modifier = Modifier.width(16.dp))
+                        RateDestinationButton()
+                    }
+                }
+                item{
+                    DetailSection()
+                }
             }
         }
-    )
-    { innerPadding ->
-//        Column(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(innerPadding)
-//                .padding(horizontal = 0.dp)
-//        ){
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .verticalScroll(scrollState) // Enable scrolling
-            ) {
-                InteractionBar()
-                ImageSection()
-                TitleSection(modifier = Modifier.padding(16.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    StarRatingSection()
-                    PriceInformationSection()
-                }
-                Box(
-                    Modifier.align(Alignment.Start)
-                ) {
-                    ViewReviewsButton()
-                }
-                BookNowButton("Book Now")
-                Row(modifier = Modifier.padding(16.dp)) {
-                    TimeInformationSection()
-                    Spacer(modifier = Modifier.width(16.dp))
-                    RateDestinationButton()
-                }
-                DetailSection()
-            }
-        //}
+    }
     }
 }
 
@@ -125,6 +138,7 @@ fun BottomNavigationBar() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            //.background(Color.Blue)
             .padding(16.dp),
         horizontalArrangement = Arrangement.Absolute.Center
     ) {
@@ -227,7 +241,7 @@ fun ViewReviewsButton(modifier: Modifier = Modifier) {
         )
         TextAsButton(
             text = "View Reviews",
-            onClick = { /* Handle button click */ }
+            onClick = { RouteActivity() }
         )
     }
 }
