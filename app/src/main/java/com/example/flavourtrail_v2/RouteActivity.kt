@@ -89,7 +89,6 @@ fun RouteScreen() {
             else -> 2 // Default to Route 2 for other values
         }
     }
-    //val selectedRoute by remember { mutableStateOf(defaultRoute) }
 
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
 
@@ -339,12 +338,12 @@ fun navigateToDetailsActivity(
     clickedIndex: Int
 ) {
     CoroutineScope(Dispatchers.IO).launch {
-        // Abfrage der Place IDs basierend auf der aktuellen Route
+        // Retrieve place IDs based on current route
         val placeIds = routePlaceDao.getAllRoutePlaces()
             .filter { it.routeId == routeId }
             .map { it.placeId }
 
-        // Intent starten auf dem Main-Thread
+        // Start intent on main-thread
         withContext(Dispatchers.Main) {
             val intent = Intent(context, DetailsActivity::class.java).apply {
                 putIntegerArrayListExtra("PLACE_IDS", ArrayList(placeIds))
