@@ -22,36 +22,52 @@ import androidx.compose.ui.unit.sp
 import com.example.flavourtrail_v2.PlaceReviewViewModel
 import com.example.flavourtrail_v2.ui.components.review.RatingPopup
 
-
+/**
+ * A composable function that displays a button for rating a destination.
+ *
+ * The button allows users to open a rating popup where they can provide feedback or reviews for a specific destination.
+ * It is styled with an icon, a label, and a popup triggered upon clicking the button.
+ *
+ * @param placeReviewViewModel The ViewModel handling the review logic and data.
+ * @param placeId The unique identifier for the place being rated.
+ */
 @Composable
 fun RateDestinationButton(placeReviewViewModel: PlaceReviewViewModel, placeId: Int) {
+    // State to manage the visibility of the rating popup
     var showPopup by remember { mutableStateOf(false) }
+
+    // Button for triggering the rating popup
     Button(
-        onClick = { showPopup = true },
+        onClick = { showPopup = true }, // Show the popup when clicked
         modifier = Modifier.width(200.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.LightGray,
-            contentColor = Color.Black
+            containerColor = Color.LightGray, // Background color of the button
+            contentColor = Color.Black // Text and icon color
         ),
-        shape = RoundedCornerShape(10.dp)
-    )
-    {
+        shape = RoundedCornerShape(10.dp) // Rounded corners for the button
+    ) {
+        // Star icon to indicate rating functionality
         Icon(
-            imageVector = Icons.Filled.Star, // Use a built-in Material Icon
-            contentDescription = "Star Icon", // Provide a description for accessibility
-            modifier = Modifier.size(24.dp), // Adjust size if needed
-            tint = Color.DarkGray // Optional: Set a tint color
+            imageVector = Icons.Filled.Star, // Star icon
+            contentDescription = "Star Icon", // Accessibility description
+            modifier = Modifier.size(24.dp), // Icon size
+            tint = Color.DarkGray // Tint color for the icon
         )
         Spacer(modifier = Modifier.width(8.dp))
+
+        // Button label
         Text(
-            text = "Rate Destination",
-            fontSize = 20.sp
+            text = "Rate Destination", // Text displayed on the button
+            fontSize = 20.sp // Font size for the text
         )
+
+        // Display the rating popup if the state is true
         if (showPopup) {
             RatingPopup(
-                placeReviewViewModel = placeReviewViewModel,
-                placeId = placeId,
-                onDismiss = { showPopup = false })
+                placeReviewViewModel = placeReviewViewModel, // Pass the ViewModel
+                placeId = placeId, // Pass the place ID
+                onDismiss = { showPopup = false } // Close the popup when dismissed
+            )
         }
     }
 }

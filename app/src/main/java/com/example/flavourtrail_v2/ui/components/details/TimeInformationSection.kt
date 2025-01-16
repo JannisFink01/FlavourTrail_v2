@@ -13,30 +13,40 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.flavourtrail_v2.R
 
+/**
+ * A composable function that displays time-related information about a destination.
+ *
+ * The `TimeInformationSection` includes two rows:
+ * - One for displaying opening hours with a clock icon.
+ * - Another for displaying the expected time spent at the destination with an hourglass icon.
+ */
 @Composable
-fun TimeInformationSection(){
-    Column{
-        Row{
-            Icon(
-                painter = painterResource(id = R.drawable.clock_icon), // Use a built-in Material Icon
-                contentDescription = "Clock Icon", // Provide a description for accessibility
-                modifier = Modifier.size(24.dp), // Adjust size if needed
-                tint = Color.Black // Optional: Set a tint color
-            )
-            Text(
-                text = "Opening Hours",
-                fontSize = 20.sp
-            )
-        }
+fun TimeInformationSection() {
+    Column {
+        // Row for displaying opening hours
         Row {
             Icon(
-                painter = painterResource(id = R.drawable.hourglass_icon), // Use a custom icon
-                contentDescription = "Hourglass Icon", // Provide a description for accessibility
-                modifier = Modifier.size(24.dp), // Adjust size if needed
+                painter = painterResource(id = R.drawable.clock_icon), // Clock icon for opening hours
+                contentDescription = "Clock Icon", // Accessibility description
+                modifier = Modifier.size(24.dp), // Icon size
+                tint = Color.Black // Icon tint color
             )
             Text(
-                text = "Time spent",
-                fontSize = 20.sp
+                text = "Opening Hours", // Label text
+                fontSize = 20.sp // Text size
+            )
+        }
+
+        // Row for displaying time spent
+        Row {
+            Icon(
+                painter = painterResource(id = R.drawable.hourglass_icon), // Hourglass icon for time spent
+                contentDescription = "Hourglass Icon", // Accessibility description
+                modifier = Modifier.size(24.dp) // Icon size
+            )
+            Text(
+                text = "Time spent", // Label text
+                fontSize = 20.sp // Text size
             )
         }
     }
