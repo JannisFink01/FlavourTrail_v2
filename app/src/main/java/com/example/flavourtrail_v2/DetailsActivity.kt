@@ -2,6 +2,7 @@ package com.example.flavourtrail_v2
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -58,6 +59,7 @@ import com.example.flavourtrail_v2.data.entity.*
 import com.example.flavourtrail_v2.data.repository.*
 import com.example.flavourtrail_v2.ui.theme.FlavourTrail_v2Theme
 import com.example.flavourtrail_v2.ui.TopBar
+import com.example.flavourtrail_v2.ui.components.ImageSection
 import com.example.flavourtrail_v2.ui.components.review.StarRatingBar
 
 class DetailsActivity : ComponentActivity() {
@@ -82,7 +84,7 @@ class DetailsActivity : ComponentActivity() {
         setContent {
             FlavourTrail_v2Theme {
                 DetailScreen(
-                    placeId = intent.getIntExtra("PLACE_ID", 1), // Default to 1 if not provided
+                    placeId = intent.getIntExtra("PLACE_ID", 2), // Default to 1 if not provided
                     placeViewModel = placeViewModel,
                     placeReviewViewModel = placeReviewViewModel
                 )
@@ -98,8 +100,8 @@ fun DetailScreen(
     placeReviewViewModel: PlaceReviewViewModel,
     modifier: Modifier = Modifier
 ) {
-    var place by remember { mutableStateOf<Place?>(null) }
     val placeWithDetails by placeReviewViewModel.reviews.collectAsState()
+    var place by remember { mutableStateOf<Place?>(null) }
     LaunchedEffect(placeId) {
         place = placeViewModel.getPlaceById(placeId)
         placeReviewViewModel.getReviewsWithDetailsByPlaceId(placeId)
@@ -129,7 +131,7 @@ fun DetailScreen(
                 .verticalScroll(scrollState) // Enable scrolling
         ) {
             InteractionBar()
-            ImageSection(place = place)
+            place?.let { ImageSection(place = it) }
             TitleSection(place = place, modifier = Modifier.padding(16.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -219,22 +221,7 @@ fun InteractionBar() {
     }
 }
 
-@Composable
-fun ImageSection(place: Place? = null) {
-    val context = LocalContext.current
-    val imageId =
-        context.resources.getIdentifier(place?.image, "drawable", context.packageName)
-    val imagePainter = if (imageId != 0) {
-        painterResource(id = imageId)
-    } else {
-        painterResource(id = R.drawable.destination_placeholder)
-    }
-    Image(
-        painter = imagePainter,
-        contentDescription = "Image",
-        modifier = Modifier.fillMaxWidth()
-    )
-}
+
 
 @Composable
 fun TitleSection(place: Place? = null, modifier: Modifier = Modifier) {
