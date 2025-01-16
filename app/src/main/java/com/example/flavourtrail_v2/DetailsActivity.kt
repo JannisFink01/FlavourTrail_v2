@@ -116,69 +116,70 @@ fun DetailScreen(
     FlavourTrail_v2Theme {
         Scaffold(
             topBar = {
-            TopBar(
-                userName = "Max Mustermann", // Beispiel-Benutzername
-                profileImageRes = R.drawable.profile_user
-            )
-        },
+                TopBar(
+                    userName = "Max Mustermann", // Beispiel-Benutzername
+                    profileImageRes = R.drawable.profile_user
+                )
+            },
             bottomBar = {
-            FlavourTrail_v2Theme {
-                NavigationBar{
-                    BottomNavigationBar()
+                FlavourTrail_v2Theme {
+                    NavigationBar {
+                        BottomNavigationBar()
+                    }
                 }
-            }
             }
         )
         { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(scrollState) // Enable scrolling
-        ) {
-            InteractionBar()
-            LazyColumn {
-                item{
-                    place?.let { ImageSection(place = it) }
-                }
-                item{
-                    TitleSection(place = place, modifier = Modifier.padding(16.dp))
-                }
-                item{
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        StarRatingSection(averageRating = averageRating)
-                        PriceInformationSection()
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .verticalScroll(scrollState) // Enable scrolling
+            ) {
+                InteractionBar()
+                LazyColumn {
+                    item {
+                        place?.let { ImageSection(place = it) }
+                    }
+                    item {
+                        TitleSection(place = place, modifier = Modifier.padding(16.dp))
+                    }
+                    item {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            StarRatingSection(averageRating = averageRating)
+                            PriceInformationSection()
+                        }
+                    }
+                    item {
+                        Box(
+                            Modifier.align(Alignment.Start)
+                        ) {
+                            ViewReviewsButton(placeId = placeId)
+                        }
+                    }
+                    item {
+                        BookNowButton("Book Now")
+                    }
+                    item {
+                        Row(modifier = Modifier.padding(16.dp)) {
+                            TimeInformationSection()
+                            Spacer(modifier = Modifier.width(16.dp))
+                            RateDestinationButton(placeReviewViewModel, placeId)
+                        }
+                    }
+                    item {
+                        place?.let {
+                            DetailSection(place = it)
+                        }
                     }
                 }
-                item{
-                    Box(
-                        Modifier.align(Alignment.Start)
-                    ) {
-                        ViewReviewsButton(placeId = placeId)
-                    }
-                }
-                item{
-                    BookNowButton("Book Now")
-                }
-                item{
-                    Row(modifier = Modifier.padding(16.dp)) {
-                        TimeInformationSection()
-                        Spacer(modifier = Modifier.width(16.dp))
-                        RateDestinationButton(placeReviewViewModel, placeId)
-                    }
-                }
-                item{
-                    place?.let {
-                        DetailSection(place = it)                }
             }
         }
     }
-    }
 }
-
 
 @Composable
 fun BottomNavigationBar() {
@@ -199,7 +200,7 @@ fun BottomNavigationBar() {
                     .clickable { /* Handle click */ }
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text= "$stopCounter/5")
+            Text(text = "$stopCounter/5")
             Spacer(modifier = Modifier.width(8.dp))
             Icon(
                 imageVector = Icons.Filled.KeyboardArrowRight, // Use a built-in Material Icon
@@ -214,7 +215,7 @@ fun BottomNavigationBar() {
 
 //Definitionen der einzelnen Composables
 @Composable
-fun InteractionBar(){
+fun InteractionBar() {
     val context = LocalContext.current
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -342,7 +343,7 @@ fun TimeInformationSection() {
 }
 
 @Composable
-fun RateDestinationButton(placeReviewViewModel: PlaceReviewViewModel,placeId: Int) {
+fun RateDestinationButton(placeReviewViewModel: PlaceReviewViewModel, placeId: Int) {
     var showPopup by remember { mutableStateOf(false) }
     Button(
         onClick = { showPopup = true },
