@@ -45,7 +45,7 @@ fun RatingPopup(placeReviewViewModel: PlaceReviewViewModel, placeId: Int, onDism
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Bewertung",
+                text = "rate this place",
                 style = MaterialTheme.typography.titleMedium,
                 fontSize = 20.sp
             )
