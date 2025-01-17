@@ -376,14 +376,21 @@ fun ButtonBar(
             Text(text = "Save", maxLines = 1)
         }
 
-        Button(onClick = onNavigateClick, modifier = Modifier.weight(1f)) {
+        Button(
+            onClick = onNavigateClick,
+            modifier = Modifier.weight(1f)
+        ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_navigate),
                 contentDescription = "Navigate Icon",
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(18.dp) // Reduced icon size
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(text = "Navigate", maxLines = 1)
+            Spacer(modifier = Modifier.width(4.dp)) // Reduced spacing
+            Text(
+                text = "Navigate", // Shortened text
+                maxLines = 1,
+                style = MaterialTheme.typography.bodySmall // Smaller text style
+            )
         }
 
         Button(onClick = onAddLocationClick, modifier = Modifier.weight(1f)) {
