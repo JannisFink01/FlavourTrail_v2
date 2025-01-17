@@ -1,5 +1,6 @@
 package com.example.flavourtrail_v2
 
+import androidx.compose.runtime.collectAsState
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -63,7 +64,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * MainActivity for the FlavourTrail app, serving as the entry point for the user interface.
+ *
+ * This activity initializes the application theme, sets up the top and bottom bars, and
+ * hosts the main content layout, including buttons, map, and a list of favorite routes.
+ */
 class MainActivity : ComponentActivity() {
+    /**
+     * Called when the activity is first created. Configures the app theme and sets up the UI.
+     *
+     * @param savedInstanceState If the activity is being re-initialized, this contains the
+     *                            most recent data supplied in `onSaveInstanceState`.
+     *                            Otherwise, it is null.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -88,7 +102,7 @@ class MainActivity : ComponentActivity() {
                     MainContent(
                         modifier = Modifier.padding(innerPadding),
                         onPlanRouteClick = {
-                            // Starte die PlanRouteActivity
+                            // Launch PlanRouteActivity
                             val intent = Intent(this, PlanRouteActivity::class.java)
                             startActivity(intent)
                         }
@@ -99,14 +113,24 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * ViewModel responsible for managing and providing route data.
+ *
+ * @property routeRepository Repository used to fetch route data from the database.
+ */
 class RouteViewModel(private val routeRepository: RouteRepository) : ViewModel() {
     private val _routes = MutableStateFlow<List<Route>>(emptyList())
+
+    /** A state flow containing the list of routes. */
     val routes: StateFlow<List<Route>> = _routes
 
     init {
         loadRoutes()
     }
 
+    /**
+     * Loads all routes from the repository and updates the state.
+     */
     private fun loadRoutes() {
         viewModelScope.launch {
             _routes.value = routeRepository.getAllRoutes()
@@ -114,12 +138,18 @@ class RouteViewModel(private val routeRepository: RouteRepository) : ViewModel()
     }
 }
 
+/**
+ * Composable function displaying the main content of the app.
+ *
+ * @param modifier Modifier for customizing the layout appearance.
+ * @param onPlanRouteClick Lambda invoked when the "Plan Your Route" button is clicked.
+ */
 @Composable
 fun MainContent(
     modifier: Modifier = Modifier,
     onPlanRouteClick: () -> Unit
 ) {
-    val routeViewModel = rememberRouteViewModel() // ViewModel mit Repository-Initialisierung
+    val routeViewModel = rememberRouteViewModel()
     val routes by routeViewModel.routes.collectAsState(initial = emptyList())
 
     Column(
@@ -128,7 +158,6 @@ fun MainContent(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Button "Plan Your Route"
         Button(
             onClick = onPlanRouteClick,
             modifier = Modifier
@@ -144,33 +173,37 @@ fun MainContent(
             )
         }
 
-        // Map-Section mit Google Maps
         MapSection(title = "Map")
         Spacer(modifier = Modifier.height(24.dp))
-
-        // Favorites-Section
         FavoritesSection(routes)
     }
 }
 
+/**
+ * Creates and remembers a RouteViewModel instance.
+ *
+ * @return An instance of RouteViewModel initialized with a RouteRepository.
+ */
 @Composable
 fun rememberRouteViewModel(): RouteViewModel {
     val context = LocalContext.current
-    val routeDao = AppDatabase.getInstance(context).routeDao() // Hole das DAO aus der Datenbank
+    val routeDao = AppDatabase.getInstance(context).routeDao()
     val routeRepository = RouteRepository(routeDao)
     return remember { RouteViewModel(routeRepository) }
 }
 
+/**
+ * Composable function for displaying a map section.
+ *
+ * @param title The title of the map section.
+ */
 @Composable
 fun MapSection(title: String) {
     val context = LocalContext.current
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
     val cameraPositionState = rememberCameraPositionState()
-
-    // State für den aktuellen Standort
     var currentLocation by remember { mutableStateOf<LatLng?>(null) }
 
-    // Hole den aktuellen Standort
     LaunchedEffect(Unit) {
         if (ContextCompat.checkSelfPermission(
                 context,
@@ -182,13 +215,12 @@ fun MapSection(title: String) {
                     currentLocation = LatLng(location.latitude, location.longitude)
                     cameraPositionState.position = CameraPosition.fromLatLngZoom(
                         currentLocation!!,
-                        15f // Zoom-Level
+                        15f
                     )
                 }
             }
         } else {
-            // Handle fehlende Berechtigungen
-            currentLocation = LatLng(0.0, 0.0) // Standardposition bei fehlender Berechtigung
+            currentLocation = LatLng(0.0, 0.0)
         }
     }
 
@@ -201,7 +233,6 @@ fun MapSection(title: String) {
             .background(Color.LightGray)
             .padding(16.dp)
     ) {
-        // Text "Map" und Icon in einer Reihe
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -209,23 +240,19 @@ fun MapSection(title: String) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = title,
-                fontSize = 15.sp
-            )
+            Text(text = title, fontSize = 15.sp)
             Icon(
-                painter = painterResource(id = R.drawable.map), // Icon "map.png"
+                painter = painterResource(id = R.drawable.map),
                 contentDescription = "Map Icon",
-                modifier = Modifier.size(24.dp), // Größe des Icons
-                tint = Color.Unspecified // Behalte die Originalfarbe des Icons
+                modifier = Modifier.size(24.dp),
+                tint = Color.Unspecified
             )
         }
 
-        // Kartenanzeige
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp) // Höhe der Karte
+                .height(200.dp)
         ) {
             if (currentLocation != null) {
                 GoogleMap(
@@ -237,6 +264,11 @@ fun MapSection(title: String) {
     }
 }
 
+/**
+ * Composable function for displaying a list of favorite routes.
+ *
+ * @param routes List of routes to be displayed in the favorites section.
+ */
 @Composable
 fun FavoritesSection(routes: List<Route>) {
     val context = LocalContext.current
@@ -254,10 +286,7 @@ fun FavoritesSection(routes: List<Route>) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "Favorites",
-                fontSize = 15.sp,
-            )
+            Text(text = "Favorites", fontSize = 15.sp)
             Icon(
                 painter = painterResource(id = R.drawable.favorite),
                 contentDescription = "Favorites Icon",
@@ -284,7 +313,6 @@ fun FavoritesSection(routes: List<Route>) {
                             .clip(RoundedCornerShape(8.dp))
                             .background(Color.White)
                             .clickable {
-                                // Übergebe die route_id der angeklickten Route an RouteActivity
                                 val intent = Intent(context, RouteActivity::class.java).apply {
                                     putExtra("ROUTE_ID", route.route_id)
                                 }
@@ -306,8 +334,7 @@ fun FavoritesSection(routes: List<Route>) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_share),
                                     contentDescription = "Share Icon",
-                                    modifier = Modifier.size(20.dp),
-                                    tint = Color.Unspecified
+                                    modifier = Modifier.size(20.dp)
                                 )
                             }
                             Spacer(modifier = Modifier.height(8.dp))
@@ -326,12 +353,15 @@ fun FavoritesSection(routes: List<Route>) {
     }
 }
 
+/**
+ * Preview function for MainContent composable.
+ */
 @Preview(showBackground = true)
 @Composable
 fun MainContentPreview() {
     FlavourTrail_v2Theme {
         MainContent(
-            onPlanRouteClick = { /* Keine Aktion in der Vorschau */ }
+            onPlanRouteClick = { /* No action in preview */ }
         )
     }
 }

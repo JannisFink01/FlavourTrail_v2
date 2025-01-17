@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -44,11 +45,14 @@ import com.example.flavourtrail_v2.ui.components.details.BottomNavigationBar
 import com.example.flavourtrail_v2.ui.components.details.DetailSection
 import com.example.flavourtrail_v2.ui.components.details.InteractionBar
 import com.example.flavourtrail_v2.ui.components.details.RateDestinationButton
-import com.example.flavourtrail_v2.ui.components.details.TimeInformationSection
 import com.example.flavourtrail_v2.ui.components.details.ViewReviewsButton
 import com.example.flavourtrail_v2.ui.components.review.StarRatingBar
 import com.example.flavourtrail_v2.ui.theme.FlavourTrail_v2Theme
 
+/**
+ * Activity for displaying the details of a place.
+ * This activity sets up the UI and interacts with ViewModels to fetch and display place details.
+ */
 class DetailsActivity : ComponentActivity() {
     private val placeViewModel: PlaceViewModel by viewModels {
         PlaceViewModelFactory(
@@ -65,6 +69,11 @@ class DetailsActivity : ComponentActivity() {
         )
     }
 
+    /**
+     * Initializes the activity, enabling edge-to-edge UI and setting the content.
+     *
+     * @param savedInstanceState The saved state of the activity, if any.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -83,16 +92,22 @@ class DetailsActivity : ComponentActivity() {
     }
 }
 
+/**
+ * Composable function to display the details of a place.
+ *
+ * @param placeIds The ID of the place to display.
+ * @param placeViewModel The ViewModel for fetching place data.
+ * @param placeReviewViewModel The ViewModel for fetching reviews of the place.
+ */
 @Composable
 fun DetailScreen(
     placeIds: List<Int>,
     clickedIndex: Int,
     placeViewModel: PlaceViewModel,
     placeReviewViewModel: PlaceReviewViewModel,
-    modifier: Modifier = Modifier
 ) {
     var place by remember { mutableStateOf<Place?>(null) }
-    var placeId by remember { mutableStateOf(placeIds.get(clickedIndex)) }
+    var placeId by remember { mutableIntStateOf(placeIds[clickedIndex]) }
     val placeWithDetails by placeReviewViewModel.reviews.collectAsState()
     LaunchedEffect(placeId) {
         place = placeViewModel.getPlaceById(placeId)
@@ -100,12 +115,11 @@ fun DetailScreen(
     }
     val averageRating = placeWithDetails.map { it.placeReview.rating }.average().toFloat()
 
-    // Create a scrollable state for vertical scrolling
     FlavourTrail_v2Theme {
         Scaffold(
             topBar = {
                 TopBar(
-                    userName = "Max Mustermann", // Beispiel-Benutzername
+                    userName = "John Doe", // Beispiel-Benutzername
                     profileImageRes = R.drawable.profile_user
                 )
             },
@@ -141,7 +155,6 @@ fun DetailScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             StarRatingSection(averageRating = averageRating)
-                            PriceInformationSection()
                         }
                     }
                     item {
@@ -156,7 +169,6 @@ fun DetailScreen(
                     }
                     item {
                         Row(modifier = Modifier.padding(16.dp)) {
-                            TimeInformationSection()
                             Spacer(modifier = Modifier.width(16.dp))
                             RateDestinationButton(placeReviewViewModel, placeId)
                         }
@@ -172,9 +184,14 @@ fun DetailScreen(
     }
 }
 
-
+/**
+ * Composable function to display the title section of a place.
+ *
+ * @param place The place whose title is to be displayed.
+ * @param modifier Optional [Modifier] for this composable.
+ */
 @Composable
-fun TitleSection(place: Place? = null, modifier: Modifier = Modifier) {
+fun TitleSection(modifier: Modifier = Modifier, place: Place? = null) {
     Text(
         text = place?.name ?: "Placeholder",
         fontSize = 24.sp,
@@ -182,20 +199,23 @@ fun TitleSection(place: Place? = null, modifier: Modifier = Modifier) {
     )
 }
 
+/**
+ * Composable function to display the star rating section.
+ *
+ * @param averageRating The average rating of the place.
+ */
 @Composable
-fun StarRatingSection(averageRating: Float, modifier: Modifier = Modifier) {
+fun StarRatingSection(averageRating: Float) {
     StarRatingBar(5, averageRating, false)
 }
 
-@Composable
-fun PriceInformationSection(modifier: Modifier = Modifier) {
-    Text(
-        text = "35,99€",
-        fontSize = 20.sp,
-        modifier = modifier
-    )
-}
-
+/**
+ * Composable function to display text as a clickable button.
+ *
+ * @param onClick The action to perform when the text is clicked.
+ * @param text The text to display.
+ * @param fontSize The font size of the text.
+ */
 @Composable
 fun TextAsButton(
     onClick: () -> Unit,
@@ -206,7 +226,7 @@ fun TextAsButton(
         text = text,
         fontSize = fontSize,
         modifier = Modifier.clickable {
-            onClick()  // Trigger the navigation or action
+            onClick()
         }
     )
 }

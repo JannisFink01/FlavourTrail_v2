@@ -15,7 +15,18 @@ import com.example.flavourtrail_v2.ui.CustomNavigationBar
 import com.example.flavourtrail_v2.ui.TopBar
 import com.example.flavourtrail_v2.ui.theme.FlavourTrail_v2Theme
 
+/**
+ * Abstract base class for all activities in the app.
+ * This class defines the common layout and structure that each activity will follow.
+ */
 abstract class BaseActivity : ComponentActivity() {
+
+    /**
+     * Called when the activity is created.
+     * It sets the content of the activity using a common theme and layout.
+     *
+     * @param savedInstanceState The saved state of the activity, if any.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -25,35 +36,44 @@ abstract class BaseActivity : ComponentActivity() {
         }
     }
 
-    // Abstrakte Methode, die jede Activity definiert
+    /**
+     * Abstract composable function that defines the unique content for each activity.
+     * Each activity should provide its specific UI components here.
+     */
     @Composable
     abstract fun Content()
 }
 
+/**
+ * A composable function that defines the common layout structure for all activities.
+ * It includes a top bar, the main content area, and a custom navigation bar.
+ *
+ * @param content The composable content to be displayed in the middle of the screen.
+ */
 @Composable
 fun BaseLayout(content: @Composable () -> Unit) {
     Column(modifier = Modifier.fillMaxSize()) {
-        // TopBar oben platzieren
+        // Place the TopBar at the top of the screen
         TopBar(
-            userName = "John Doe", // Beispiel für Benutzernamen
-            profileImageRes = R.drawable.profile_user // Beispiel für Profilbild
+            userName = "John Doe", // Example user name
+            profileImageRes = R.drawable.profile_user // Example profile image
         )
 
-        // Abstand nach der TopBar
+        // Add some space below the TopBar
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Hauptinhalt in der Mitte platzieren
+        // Main content occupies the remaining space in the middle
         Box(
             modifier = Modifier
-                .weight(1f) // Verfügbare Fläche einnehmen
+                .weight(1f) // Take up available space
                 .fillMaxSize()
         ) {
             content()
         }
 
-        // Navigationsleiste unten platzieren
+        // Place the custom navigation bar at the bottom of the screen
         CustomNavigationBar(onItemSelected = { selectedItem ->
-            // Auswahl des Navigations-Items behandeln
+            // Handle the selection of navigation items
             when (selectedItem) {
                 "Home" -> MainActivity()
                 "Routes" -> PlanRouteActivity()
@@ -62,4 +82,3 @@ fun BaseLayout(content: @Composable () -> Unit) {
         })
     }
 }
-

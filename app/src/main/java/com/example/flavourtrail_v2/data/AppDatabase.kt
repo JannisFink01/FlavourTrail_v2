@@ -29,7 +29,10 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
+/**
+ * The main database class for the application.
+ * This class defines the database configuration and serves as the main access point for the underlying connection to the app's persisted data.
+ */
 @Database(
     entities = [
         Favourites::class,
@@ -46,13 +49,45 @@ import java.util.Locale
 )
 @TypeConverters(DateConverter::class)
 abstract class AppDatabase : RoomDatabase() {
+
+    /**
+     * @return The DAO for accessing the Favourites table.
+     */
     abstract fun favouritesDao(): FavouritesDao
+
+    /**
+     * @return The DAO for accessing the Place table.
+     */
     abstract fun placeDao(): PlaceDao
+
+    /**
+     * @return The DAO for accessing the PlaceReview table.
+     */
     abstract fun placeReviewDao(): PlaceReviewDao
+
+    /**
+     * @return The DAO for accessing the PlaceTags table.
+     */
     abstract fun placeTagsDao(): PlaceTagsDao
+
+    /**
+     * @return The DAO for accessing the Route table.
+     */
     abstract fun routeDao(): RouteDao
+
+    /**
+     * @return The DAO for accessing the RoutePlace table.
+     */
     abstract fun routePlaceDao(): RoutePlaceDao
+
+    /**
+     * @return The DAO for accessing the RouteReview table.
+     */
     abstract fun routeReviewDao(): RouteReviewDao
+
+    /**
+     * @return The DAO for accessing the User table.
+     */
     abstract fun userDao(): UserDao
 
     companion object {
@@ -61,11 +96,23 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var instance: AppDatabase? = null
 
+        /**
+         * Gets the singleton instance of the database.
+         *
+         * @param context The application context.
+         * @return The singleton instance of the database.
+         */
         fun getInstance(context: Context): AppDatabase =
             instance ?: synchronized(this) {
                 instance ?: buildDatabase(context).also { instance = it }
             }
 
+        /**
+         * Builds the database.
+         *
+         * @param context The application context.
+         * @return The built database instance.
+         */
         private fun buildDatabase(context: Context): AppDatabase =
             Room.databaseBuilder(
                 context,
@@ -94,6 +141,14 @@ abstract class AppDatabase : RoomDatabase() {
                                         "password789",
                                         false,
                                         "guy_in_bar"
+                                    ),
+                                    User(
+                                        3,
+                                        "John Doe",
+                                        "john-doe@example.com",
+                                        "password123",
+                                        false,
+                                        "profile_user"
                                     )
                                 )
 

@@ -20,6 +20,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/**
+ * A composable function for displaying a bottom navigation bar with controls to navigate stops.
+ *
+ * This navigation bar includes left and right navigation icons with a text indicator to show
+ * the current stop number out of a total number of stops. The icons are clickable and allow for
+ * interaction to move between stops.
+ */
 @Composable
 fun BottomNavigationBar(index: Int,items: List<String>, onItemSelected: (String) -> Unit) {
     var index by remember { mutableIntStateOf(index) }
@@ -28,11 +35,11 @@ fun BottomNavigationBar(index: Int,items: List<String>, onItemSelected: (String)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.Absolute.Center
     ) {
-        Row() {
-            val stopCounter = 1
+        Row {
+            val stopCounter = 1 // Current stop indicator
             Icon(
-                imageVector = Icons.Filled.KeyboardArrowLeft, // Use a built-in Material Icon
-                contentDescription = "Stop Count", // Provide a description for accessibility
+                imageVector = Icons.Filled.KeyboardArrowLeft, // Left navigation icon
+                contentDescription = "Previous Stop", // Description for accessibility
                 modifier = Modifier
                     .size(24.dp)
                     .clickable {
@@ -48,8 +55,8 @@ fun BottomNavigationBar(index: Int,items: List<String>, onItemSelected: (String)
             Text(text = "${index +1}/${items.size}")
             Spacer(modifier = Modifier.width(8.dp))
             Icon(
-                imageVector = Icons.Filled.KeyboardArrowRight, // Use a built-in Material Icon
-                contentDescription = "Stop Count", // Provide a description for accessibility
+                imageVector = Icons.Filled.KeyboardArrowRight, // Right navigation icon
+                contentDescription = "Next Stop", // Description for accessibility
                 modifier = Modifier
                     .size(24.dp)
                     .clickable {
